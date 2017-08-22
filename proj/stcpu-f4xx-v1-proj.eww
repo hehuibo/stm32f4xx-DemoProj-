@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workspace>
+    <project>
+        <path>$WS_DIR$\Loader\stcpu-f4xx-loader-v1.ewp</path>
+    </project>
+    <project>
+        <path>$WS_DIR$\iar-mdk(rtos)\stcpu-f4xx-std-v1.ewp</path>
+    </project>
+    <project>
+        <path>$WS_DIR$\iar-mdk(fms)\stcpu-f4xx-Tempalte-v1.ewp</path>
+    </project>
+    <batchBuild />
+</workspace>
