@@ -20,7 +20,7 @@ static void InitChipInternal(void){
 
 /***初始化外围设备***/
 static void InitBoardPeripheral(void){
-  
+  extern void ModbusMntInit(void);
   Flash_Init();
     
   InitParam();
@@ -28,6 +28,8 @@ static void InitBoardPeripheral(void){
   vETH_EmacInit();
   
   startEthernet();
+  
+  ModbusMntInit();
 }
 
 
@@ -83,7 +85,8 @@ void vDelay10MSTask(void){
 
 }
 /*********************1STask****************************/
-void vDelay1STask(void){
+void vDelay1STask(void)
+{
   if(FSM_IsOff(g_FSM.FSM_TASK_DELAY1S)){
     return ;
   }
@@ -98,8 +101,10 @@ void vDelay1STask(void){
 
 /***************MainTask*************************/
 
-void vMainTask(void){
+void vMainTask(void)
+{
   
+  extern void vModbusPoll(void);
   if(FSM_IsOn(g_FSM.FSM_FLAG_UART4RXED)){
     FSM_SetOff(g_FSM.FSM_FLAG_UART4RXED);	
     #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
@@ -112,6 +117,8 @@ void vMainTask(void){
   }
   
   LwIP_Periodic_Handle();
+
+  vModbusPoll();
 }
 
 const pfFSMCallFunctionTYPE pFunCalled = {

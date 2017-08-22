@@ -66,6 +66,12 @@ $PROJ_DIR$\..\..\src\3rdPart\Kernel\inc
 $PROJ_DIR$\..\..\src\3rdPart\Kernel\ports\IAR
 
 
+FreeModbus
+$PROJ_DIR$\..\..\src\3rdPart\FreeModbus\port
+$PROJ_DIR$\..\..\src\3rdPart\FreeModbus\Modbus\rtu
+$PROJ_DIR$\..\..\src\3rdPart\FreeModbus\Modbus\tcp
+$PROJ_DIR$\..\..\src\3rdPart\FreeModbus\Modbus\ascii
+$PROJ_DIR$\..\..\src\3rdPart\FreeModbus\Modbus\include
 
 
 

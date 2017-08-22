@@ -355,6 +355,11 @@
                     <state>$PROJ_DIR$\..\..\src\utlis\inc\debug\RTT</state>
                     <state>$PROJ_DIR$\..\..\src\Comm\Param\inc</state>
                     <state>$PROJ_DIR$\..\..\src\Comm\Core\inc\system</state>
+                    <state>$PROJ_DIR$\..\..\src\3rdPart\FreeModbus\port</state>
+                    <state>$PROJ_DIR$\..\..\src\3rdPart\FreeModbus\Modbus\rtu</state>
+                    <state>$PROJ_DIR$\..\..\src\3rdPart\FreeModbus\Modbus\tcp</state>
+                    <state>$PROJ_DIR$\..\..\src\3rdPart\FreeModbus\Modbus\ascii</state>
+                    <state>$PROJ_DIR$\..\..\src\3rdPart\FreeModbus\Modbus\include</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -2068,6 +2073,75 @@
     <group>
         <name>3rdpart</name>
         <group>
+            <name>FreeModbus</name>
+            <group>
+                <name>Modbus</name>
+                <group>
+                    <name>ascii</name>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\src\3rdPart\FreeModbus\Modbus\ascii\mbascii.c</name>
+                    </file>
+                </group>
+                <group>
+                    <name>functions</name>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\src\3rdPart\FreeModbus\Modbus\functions\mbfunccoils.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\src\3rdPart\FreeModbus\Modbus\functions\mbfuncdiag.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\src\3rdPart\FreeModbus\Modbus\functions\mbfuncdisc.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\src\3rdPart\FreeModbus\Modbus\functions\mbfuncholding.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\src\3rdPart\FreeModbus\Modbus\functions\mbfuncinput.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\src\3rdPart\FreeModbus\Modbus\functions\mbfuncother.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\src\3rdPart\FreeModbus\Modbus\functions\mbutils.c</name>
+                    </file>
+                </group>
+                <group>
+                    <name>rtu</name>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\src\3rdPart\FreeModbus\Modbus\rtu\mbcrc.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\src\3rdPart\FreeModbus\Modbus\rtu\mbrtu.c</name>
+                    </file>
+                </group>
+                <group>
+                    <name>tcp</name>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\src\3rdPart\FreeModbus\Modbus\tcp\mbtcp.c</name>
+                    </file>
+                </group>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\3rdPart\FreeModbus\Modbus\mb.c</name>
+                </file>
+            </group>
+            <group>
+                <name>port</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\3rdPart\FreeModbus\port\ModbusPort.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\3rdPart\FreeModbus\port\portevent.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\3rdPart\FreeModbus\port\portserial.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\3rdPart\FreeModbus\port\porttimer.c</name>
+                </file>
+            </group>
+        </group>
+        <group>
             <name>Lwip</name>
             <group>
                 <name>api</name>
@@ -2289,6 +2363,12 @@
                 <name>iap</name>
                 <file>
                     <name>$PROJ_DIR$\..\..\src\Comm\Core\src\iap\IAP.c</name>
+                </file>
+            </group>
+            <group>
+                <name>mbus</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\Comm\Core\src\mbus\mbmnt.c</name>
                 </file>
             </group>
             <group>
