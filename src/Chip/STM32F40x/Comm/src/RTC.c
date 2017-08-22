@@ -220,7 +220,7 @@ void vRTC_SetAlarm(struct _tag_AlarmFormat *pAlarm){
 void RTC_Alarm_IRQHandler(void){    
   if(RTC_GetFlagStatus(RTC_FLAG_ALRAF)==SET){
     RTC_ClearFlag(RTC_FLAG_ALRAF);
-    //TRACE("ALARM A!\r\n");
+
   }   
   EXTI_ClearITPendingBit(EXTI_Line17);	 
 }
@@ -230,8 +230,8 @@ void RTC_WKUP_IRQHandler(void){
     RTC_ClearFlag(RTC_FLAG_WUTF);
     RTC_GetTime(RTC_Format_BIN,&sysTimeDate.Time);
     RTC_GetDate(RTC_Format_BIN,&sysTimeDate.Date);
-  #if defined (FreeRTOS_Kernel)   
-  #endif
+    #if defined (FreeRTOS_Kernel)   
+    #endif
   }   
   EXTI_ClearITPendingBit(EXTI_Line22);
 }

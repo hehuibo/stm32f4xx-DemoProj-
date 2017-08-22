@@ -34,19 +34,19 @@
 enum _tag_eFlashCmd
 {
    
-  iFlashCmd_WriteStatus         = 0x01,
-  iFlashCmd_Write               = 0x02,  /*Page Program*/
-  iFlashCmd_Read                = 0x03,
-  iFlashCmd_WriteDisable        = 0x04,
-  iFlashCmd_ReadStatus          = 0x05,
-  iFlashCmd_WriteEnable         = 0x06,
+  eFlashCmd_WriteStatus         = 0x01,
+  eFlashCmd_Write               = 0x02,  /*Page Program*/
+  eFlashCmd_Read                = 0x03,
+  eFlashCmd_WriteDisable        = 0x04,
+  eFlashCmd_ReadStatus          = 0x05,
+  eFlashCmd_WriteEnable         = 0x06,
   
-  iFlashCmd_Erase4K             = 0x20, /*Sector Erase*/
-  iFlashCmd_Erase32K            = 0x52, /* 32k Block Erase*/
-  iFlashCmd_Erase64K            = 0xD8, /*64K Block Erase*/
-  iFlashCmd_EraseAll            = 0xC7, /*Chip Erase*/
+  eFlashCmd_Erase4K             = 0x20, /*Sector Erase*/
+  eFlashCmd_Erase32K            = 0x52, /* 32k Block Erase*/
+  eFlashCmd_Erase64K            = 0xD8, /*64K Block Erase*/
+  eFlashCmd_EraseAll            = 0xC7, /*Chip Erase*/
   
-  iFlashCmd_DeviceID            = 0x9F,
+  eFlashCmd_DeviceID            = 0x9F,
   
   /**/
   eFlash_DummyByte              = 0x00,
@@ -55,17 +55,18 @@ enum _tag_eFlashCmd
 #if defined(FreeRTOS_Kernel)
 #define FlashDelayms(x)  vTaskDelay(x)   
 #else
-#define FlashDelayms(x)
+extern void SysTickDlyMs(uint16_t ms);
+#define FlashDelayms(x)  SysTickDlyMs(x)
 #endif
 
-typedef struct _tag_FlashCSCtrlVal
+typedef struct _tag_FlashCSCtrlValTYPE
 {
   GPIO_TypeDef* mGPIOx;
   unsigned int mBasePin;
-}FlashCSCtrlValTYPE;
+}xTFlashCSCtrlValTypeDef;
 
-typedef uint8_t(*pfFlashTxRxFuncTYPE[])(uint8_t);
-typedef void (*pfFlashSpiFuncTYPE[])(void);
+typedef uint8_t(*pfFlashTxRxFUNCTION[])(uint8_t);
+typedef void (*pfFlashSpiFUNCTION[])(void);
 
 /*********Config**********/
 #define FLASH_CS_NUM    1
@@ -102,19 +103,17 @@ enum eFlashCSTYPE{
  * @options:	Bitfield to store chip relevant options
  */
 struct data_flash_dev {
-	char *name;
-	unsigned int id;
-	unsigned int idmask;
-	unsigned long pagesize;
-	unsigned long chipsize;
-	unsigned long erasesize;
-	unsigned long options;
+  char *name;
+  unsigned int id;
+  unsigned int idmask;
+  unsigned long pagesize;
+  unsigned long chipsize;
+  unsigned long erasesize;
+  unsigned long options;
 };
 
 #define SIZE_K(n)	( (n) *1024 )
 #define SIZE_M(n)	( (n) *1024 * 1024 )
-
-extern const struct data_flash_dev data_flash_ids[];
 
 struct _tag_DataFlash
 {

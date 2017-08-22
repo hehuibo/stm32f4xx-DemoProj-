@@ -18,9 +18,9 @@ const struct data_flash_dev data_flash_ids[]=
 /*
  *	SST芯片
  */
-	{ "SST25VF080",   0x8E25BF, 0xFFFFFF,  0x1000,  SIZE_K(512), 0x1000,  1	},	
-	{ "SST25VF016",   0x4125BF, 0xFFFFFF,  0x1000,  SIZE_M(2), 	0x1000,  1	},
-	{ "SST25VF032",   0x4a25BF, 0xFFFFFF,  0x1000,  SIZE_M(4), 	0x1000,  1	},	
+	{ "SST25VF080",   0x8E25BF, 0xFFFFFF,  0x1000,  SIZE_K(512),    0x1000,  1	},	
+	{ "SST25VF016",   0x4125BF, 0xFFFFFF,  0x1000,  SIZE_M(2), 	    0x1000,  1	},
+	{ "SST25VF032",   0x4a25BF, 0xFFFFFF,  0x1000,  SIZE_M(4), 	    0x1000,  1	},	
 /*
  *	Atemal设备
  *	第一字节	0x1F	厂商
@@ -37,7 +37,6 @@ const struct data_flash_dev data_flash_ids[]=
 	//4125bf
 	{ "AT25VF016A",		0x471F,  0xE0FFFF,  0x1000,  SIZE_M(4)  , 0x1000,  0	},	
 	
-//	bf4125bf
 
 /*
  *	MX芯片
@@ -45,7 +44,7 @@ const struct data_flash_dev data_flash_ids[]=
 	{ "MX25L3206E",   0xc22016, 0xFFFFFF,  0x1000,  SIZE_M(4)  , 0x1000,  0	},	
 	{ "MX25L6406E",   0x1720c2, 0xFFFFFF,  0x1000,  SIZE_M(8)  , 0x1000,  0	},	
 	{ "MX25L3206E",   0x1620c2, 0xFFFFFF,  0x1000,  SIZE_M(4)  , 0x1000,  0	},	
-	{ "MX25L12835F",  0x1820c2, 0xFFFFFF,  0x1000,  SIZE_M(16)  , 0x1000,  0	},	
+	{ "MX25L12835F",  0x1820c2, 0xFFFFFF,  0x1000,  SIZE_M(16) , 0x1000,  0	},	
 /*
  *	结束
  */
@@ -53,21 +52,22 @@ const struct data_flash_dev data_flash_ids[]=
 };
 
 //FlashCS
-const FlashCSCtrlValTYPE gsFlashCSCtrlValAryTbl[FLASH_CS_NUM] = {
+const xTFlashCSCtrlValTypeDef gxFlashCSCtrlValAry[FLASH_CS_NUM] = {
   {FLASH_CS0_PORT, FLASH_CS0_PIN},  /*eFLASH_ID_CS0*/
 };
 
 //Flash SPI
-const pfFlashTxRxFuncTYPE pfFlashTxRxAryTbl = {
+const pfFlashTxRxFUNCTION pfFlashTxRxAry = {
   SPI1_TxRxByte,
 };
 
+/*SPI Lock*/
 #if defined (FreeRTOS_Kernel) 
-const pfFlashSpiFuncTYPE pfFlashSpiLockFuncAryTbl = {
+const pfFlashSpiFUNCTION pfFlashSpiLockAry = {
   SPI1_Lock,
 };
 
-const pfFlashSpiFuncTYPE pfFlashSpiUnLockFuncAryTbl = {
+const pfFlashSpiFUNCTION pfFlashSpiUnLockAry = {
   SPI1_Unlock,
 };
 #endif

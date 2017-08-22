@@ -41,10 +41,10 @@ typedef  struct tag_DevParamTYPE
   uint32_t  mRS485BaundRate;
   
   uint8_t mResEnd[2];
-}sTDevParamTYPE;
+}xTDevParamTypeDef;
 
 
-extern sTDevParamTYPE *pDevParam;
+extern xTDevParamTypeDef *pDevParam;
 
 void InitParam(void);
 

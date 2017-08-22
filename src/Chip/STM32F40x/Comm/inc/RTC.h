@@ -32,7 +32,6 @@ struct _tag_RTCTimeParam
   
 };
 
-void vRTC_GetTimeDate(void);
 void vConfigureRTC(void);
 ErrorStatus xRTC_SetTime(RTC_TimeTypeDef *pTime);
 ErrorStatus xRTC_SetDate(RTC_DateTypeDef *pDate);

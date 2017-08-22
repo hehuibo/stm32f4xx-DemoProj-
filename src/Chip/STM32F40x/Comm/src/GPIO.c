@@ -20,7 +20,7 @@ void vGPIO_Configure(void){
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_13;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
   GPIO_Init(GPIOC,&GPIO_InitStructure);
   
   GPIO_SetBits(GPIOC, GPIO_Pin_8 | GPIO_Pin_9);

@@ -3,8 +3,8 @@
  Name        : Param.c
  Author      : 
  Version     :
- Copyright   : Your copyright notice
- Description : Hello World in C, Ansi-style
+ Copyright   : 
+ Description : 
  ============================================================================
  */
 #include "Param.h"
@@ -20,10 +20,10 @@
 #endif
 
 
-static uint32_t DevParamAddr;	
+static uint32_t prvDevParamAddr;	
 
 #pragma location = "AHB_RAM_MEMORY"
-sTDevParamTYPE  gs_DevParam;
+xTDevParamTypeDef  gs_DevParam;
 
 struct _tag_ParamAddrLimit{
   unsigned int addrbegin;
@@ -42,7 +42,7 @@ const struct _tag_ParamAddrLimit DeviceParamAddrLimit = {
 };
 
 
-sTDevParamTYPE *pDevParam =  &gs_DevParam;
+xTDevParamTypeDef *pDevParam =  &gs_DevParam;
 
 /*ParamDefaultInit*/
 void DefaultDevParamInit(void)
@@ -70,7 +70,7 @@ void DefaultDevParamInit(void)
   gs_DevParam.mDevId = 0x00;
   
   gs_DevParam.magic = DEVICEPARAM_MAGIC;
-  gs_DevParam.paramlen = offsetof(sTDevParamTYPE , mResEnd) + sizeof(gs_DevParam.mResEnd);
+  gs_DevParam.paramlen = offsetof(xTDevParamTypeDef , mResEnd) + sizeof(gs_DevParam.mResEnd);
 }
 
 /****ParamInit****/
@@ -78,7 +78,7 @@ uint32_t DevParamInit(void){
   
   DefaultDevParamInit();
 	
-  return DevParamAddr;
+  return prvDevParamAddr;
 }
 
 
