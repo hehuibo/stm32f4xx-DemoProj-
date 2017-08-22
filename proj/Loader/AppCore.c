@@ -91,7 +91,7 @@ void vDelay1STask(void){
   dbgTRACE("appStart\n");
   #endif 
   
-  GPIO_ToggleBits(GPIOC,GPIO_Pin_8);
+  GPIO_ToggleBits(GPIOE,GPIO_Pin_2);
 }
 
 /***************MainTask*************************/
