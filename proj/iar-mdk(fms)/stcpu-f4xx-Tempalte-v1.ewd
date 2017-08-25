@@ -88,7 +88,7 @@
                 </option>
                 <option>
                     <name>OCLastSavedByProductVersion</name>
-                    <state>7.80.4.12487</state>
+                    <state>8.11.2.13604</state>
                 </option>
                 <option>
                     <name>UseFlashLoader</name>
@@ -674,7 +674,7 @@
                 </option>
                 <option>
                     <name>IjetSelectedCPUBehaviour</name>
-                    <state>0</state>
+                    <state></state>
                 </option>
                 <option>
                     <name>ICpuName</name>

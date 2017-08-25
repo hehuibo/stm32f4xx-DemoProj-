@@ -16,6 +16,8 @@ static void InitChipInternal(void){
   vGPIO_Configure();
   
   SPI1_Configure();
+  
+  vTIM3_Init();
 }
 
 /***初始化外围设备***/

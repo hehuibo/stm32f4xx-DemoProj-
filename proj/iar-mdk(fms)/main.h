@@ -2,12 +2,12 @@
 #define _MAIN_H
 
 #include "TypesCfg.h"
-#include "GPIO.h"
 #include "IAP.h"
 #include "StartUpCfg.h"
 #include "netio.h"
 
 #include "GPIO.h"
+#include "TIM3.h"
 #include "SPI.h"
 #include "RTC.h"
 #include "ETH_EMAC.h"

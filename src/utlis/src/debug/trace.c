@@ -20,8 +20,9 @@
 /*¥Æø⁄¥Ú”°≈‰÷√*/
 #if defined (UART_TRACE)
 #include "stm32f4xx.h"
-#include "USART1.h"
-#define     dbgTRACEUART    USART1
+//#include "USART1.h"
+#include "UART4.h"
+#define     dbgTRACEUART    UART4 //USART1
 #endif
 
 #if defined (JLINK_RTT_TRACE)
@@ -55,7 +56,8 @@ void TRACE_Init(void)
 #endif
   
 #if defined (UART_TRACE)
-  vUSART1_Configure(115200);
+  //vUSART1_Configure(115200);
+  vUART4_Configure(115200);
 #endif
 }
 

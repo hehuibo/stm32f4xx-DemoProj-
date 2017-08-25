@@ -2451,6 +2451,9 @@
             <name>$PROJ_DIR$\main.c</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\main.h</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\stm32f4xx_conf.h</name>
         </file>
     </group>
@@ -2503,7 +2506,16 @@
                     <name>$PROJ_DIR$\..\..\src\Chip\STM32F40x\Comm\src\STFLASH.c</name>
                 </file>
                 <file>
+                    <name>$PROJ_DIR$\..\..\src\Chip\STM32F40x\Comm\src\TIM1.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\Chip\STM32F40x\Comm\src\TIM3.c</name>
+                </file>
+                <file>
                     <name>$PROJ_DIR$\..\..\src\Chip\STM32F40x\Comm\src\TimDly.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\Chip\STM32F40x\Comm\src\TSensor.c</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\src\Chip\STM32F40x\Comm\src\UART4.c</name>
