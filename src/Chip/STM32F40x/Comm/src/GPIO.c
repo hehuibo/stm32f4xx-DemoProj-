@@ -22,8 +22,7 @@ void vGPIO_Configure(void){
   
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
   GPIO_Init(GPIOC,&GPIO_InitStructure);
-  
-  GPIO_SetBits(GPIOC, GPIO_Pin_8 | GPIO_Pin_9);
+ 
 
 }
 

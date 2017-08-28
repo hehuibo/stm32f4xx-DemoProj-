@@ -650,7 +650,7 @@
                 </option>
                 <option>
                     <name>OCOutputOverride</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
@@ -685,7 +685,7 @@
             <archiveVersion>1</archiveVersion>
             <data>
                 <prebuild></prebuild>
-                <postbuild></postbuild>
+                <postbuild>$PROJ_DIR$\..\Tools\soft\BinCipherGen\BinCipherGen $PROJ_DIR$\Debug\Exe\stcpu-f4xx-Tempalte-v1.bin</postbuild>
             </data>
         </settings>
         <settings>
@@ -1678,15 +1678,15 @@
                 <option>
                     <name>OOCOutputFormat</name>
                     <version>3</version>
-                    <state>1</state>
+                    <state>3</state>
                 </option>
                 <option>
                     <name>OCOutputOverride</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>stcpu-f4xx-Tempalte-v1.hex</state>
+                    <state>stcpu-f4xx-Tempalte-v1.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -1717,7 +1717,7 @@
             <archiveVersion>1</archiveVersion>
             <data>
                 <prebuild></prebuild>
-                <postbuild></postbuild>
+                <postbuild>$PROJ_DIR$\..\Tools\soft\BinCipherGen\BinCipherGen $PROJ_DIR$\Release\Exe\stcpu-f4xx-Tempalte-v1.bin</postbuild>
             </data>
         </settings>
         <settings>
@@ -2194,9 +2194,6 @@
     <group>
         <name>app</name>
         <file>
-            <name>$PROJ_DIR$\appcfg.h</name>
-        </file>
-        <file>
             <name>$PROJ_DIR$\AppCore.c</name>
         </file>
         <file>
@@ -2222,6 +2219,9 @@
             <file>
                 <name>$PROJ_DIR$\..\..\src\Chip\PeriphDriver\src\FlashCfg.c</name>
             </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\src\Chip\PeriphDriver\src\IR.c</name>
+            </file>
         </group>
         <group>
             <name>stm32f4xx</name>
@@ -2244,6 +2244,9 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\src\Chip\STM32F40x\Comm\src\NVIC.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\Chip\STM32F40x\Comm\src\PWM.c</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\src\Chip\STM32F40x\Comm\src\RTC.c</name>
@@ -2339,10 +2342,19 @@
             <group>
                 <name>libs</name>
                 <file>
+                    <name>$PROJ_DIR$\..\..\src\utlis\inc\appcfg.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\utlis\inc\FSM.h</name>
+                </file>
+                <file>
                     <name>$PROJ_DIR$\..\..\src\utlis\src\FSMBuffer.c</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\src\utlis\src\libs.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\utlis\src\SoftVer.c</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\src\utlis\src\utils.c</name>

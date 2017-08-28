@@ -2442,9 +2442,6 @@
     <group>
         <name>app</name>
         <file>
-            <name>$PROJ_DIR$\appcfg.h</name>
-        </file>
-        <file>
             <name>$PROJ_DIR$\AppCore.c</name>
         </file>
         <file>
@@ -2470,6 +2467,9 @@
             <file>
                 <name>$PROJ_DIR$\..\..\src\Chip\PeriphDriver\src\FlashCfg.c</name>
             </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\src\Chip\PeriphDriver\src\IR.c</name>
+            </file>
         </group>
         <group>
             <name>stm32f4xx</name>
@@ -2492,6 +2492,9 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\src\Chip\STM32F40x\Comm\src\NVIC.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\Chip\STM32F40x\Comm\src\PWM.c</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\src\Chip\STM32F40x\Comm\src\RTC.c</name>
@@ -2587,10 +2590,19 @@
             <group>
                 <name>libs</name>
                 <file>
+                    <name>$PROJ_DIR$\..\..\src\utlis\inc\appcfg.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\utlis\inc\FSM.h</name>
+                </file>
+                <file>
                     <name>$PROJ_DIR$\..\..\src\utlis\src\FSMBuffer.c</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\src\utlis\src\libs.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\utlis\src\SoftVer.c</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\src\utlis\src\utils.c</name>

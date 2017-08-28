@@ -7,7 +7,6 @@ uint16_t g_uiFSMDelay1S = FSM_TIMEOUT_1S;
 
 
 
-
 /*******************TargetInit**************************/
 /***初始化芯片内部资源***/
 static void InitChipInternal(void){
@@ -18,6 +17,8 @@ static void InitChipInternal(void){
   SPI1_Configure();
   
   vTIM3_Init();
+  
+  PWM_Init();
 }
 
 /***初始化外围设备***/

@@ -1,1 +1,6 @@
-
+命令格式:
+Len(2) + DevID(2) + Cmd(2) + Index(2) + Data(n) + CRC(2) + 0x0D0A
+ CRC : Len - Data
+ Len : DevID - Data
+ 
+ 

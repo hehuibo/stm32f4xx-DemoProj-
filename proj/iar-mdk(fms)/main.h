@@ -8,6 +8,7 @@
 
 #include "GPIO.h"
 #include "TIM3.h"
+#include "PWM.h"
 #include "SPI.h"
 #include "RTC.h"
 #include "ETH_EMAC.h"
