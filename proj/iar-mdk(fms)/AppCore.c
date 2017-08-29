@@ -96,7 +96,7 @@ void vDelay1STask(void){
   dbgTRACE("appStart\n");
   #endif 
   
- // GPIO_ToggleBits(GPIOC,GPIO_Pin_8);
+  //GPIO_ToggleBits(GPIOC,GPIO_Pin_8);
 }
 
 /***************MainTask*************************/
@@ -114,9 +114,7 @@ void vMainTask(void){
     #endif 
   }
   
-
-  
-  LwIP_Periodic_Handle();
+  LwIP_PeriodicHandle();
 }
 
 const pFSM_AryFUNCTION pfn_FSM = {
