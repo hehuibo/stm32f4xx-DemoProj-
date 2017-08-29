@@ -9,6 +9,6 @@
 #define PWM_H_
 
 
-void PWM_Init(void);
+void vPWM_Init(void);
 
 #endif /* PWM_H_ */

@@ -18,7 +18,7 @@ static void InitChipInternal(void){
   
   vTIM3_Init();
   
-  PWM_Init();
+  vPWM_Init();
 }
 
 /***初始化外围设备***/
@@ -83,7 +83,7 @@ void vDelay10MSTask(void){
     }
     g_AppCommBfrMnt.mMsgID = eAppCommMsgID_NONE;
   }
-
+  
 }
 /*********************1STask****************************/
 void vDelay1STask(void){
@@ -96,7 +96,7 @@ void vDelay1STask(void){
   dbgTRACE("appStart\n");
   #endif 
   
-  GPIO_ToggleBits(GPIOC,GPIO_Pin_8);
+ // GPIO_ToggleBits(GPIOC,GPIO_Pin_8);
 }
 
 /***************MainTask*************************/
@@ -113,6 +113,8 @@ void vMainTask(void){
     dbgTRACE("\n");  
     #endif 
   }
+  
+
   
   LwIP_Periodic_Handle();
 }
