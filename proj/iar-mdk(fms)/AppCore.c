@@ -119,7 +119,7 @@ void vMainTask(void){
   LwIP_Periodic_Handle();
 }
 
-const pfFSMCallFunctionTYPE pFunCalled = {
+const pFSM_AryFUNCTION pfn_FSM = {
   vDelay10MSTask,
   vDelay1STask,
   vMainTask

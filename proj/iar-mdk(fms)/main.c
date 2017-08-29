@@ -15,7 +15,7 @@ int main(void){
   AppTaskInit();
   while(1){
     for(i=0; i< MAX_FUNCITEM; i++){
-      pFunCalled[i]();
+      pfn_FSM[i]();
     }
     i = 0;			
   }

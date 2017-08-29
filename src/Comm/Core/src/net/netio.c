@@ -117,7 +117,7 @@ void startEthernet(void){
 }
 
 #if defined (_LOADER) || defined (_NoRTOSKernel)
-void LwIP_Periodic_Handle(void){
+void LwIP_PeriodicHandle(void){
 #if LWIP_TCP
   /* TCP periodic process every 250 ms */
   if (LocalTime - TCPTimer >= TCP_TMR_INTERVAL){

@@ -2518,6 +2518,9 @@
                     <name>$PROJ_DIR$\..\..\src\Chip\STM32F40x\Comm\src\TimDly.c</name>
                 </file>
                 <file>
+                    <name>$PROJ_DIR$\..\..\src\Chip\STM32F40x\Comm\src\TIMIC.c</name>
+                </file>
+                <file>
                     <name>$PROJ_DIR$\..\..\src\Chip\STM32F40x\Comm\src\TSensor.c</name>
                 </file>
                 <file>

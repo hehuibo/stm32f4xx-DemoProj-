@@ -34,7 +34,7 @@ void startEthernet(void);
 int TcpCreate(int listenPort);
 int UdpOpen(struct sockaddr_in *pSock, int port);
 #else
-void LwIP_Periodic_Handle(void);
+void LwIP_PeriodicHandle(void);
 
 void NetEnvInit(void);
 #endif

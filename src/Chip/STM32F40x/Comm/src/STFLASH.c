@@ -75,7 +75,6 @@ static uint16_t STFLASH_GetFlashSector(uint32_t addr)
 int STFLASH_ProgramData(uint32_t *pwAddr,uint32_t *pData,uint32_t paramlen)	
 { 
   //扇区首地址
-  
   /* 64 Kbyte */
   if(*pwAddr == ADDR_FLASH_SECTOR_4){
     if(FLASH_COMPLETE != FLASH_EraseSector(FLASH_Sector_4, VoltageRange_3)){
@@ -89,17 +88,16 @@ int STFLASH_ProgramData(uint32_t *pwAddr,uint32_t *pData,uint32_t paramlen)
     }
   }
   
+  
+  
   /*写入数据*/
   for (int i = 0; (i < paramlen) && (*pwAddr <= (STFLASH_END_ADDRESS-4)); i++){
-    if (FLASH_ProgramWord(*pwAddr, *(uint32_t*)(pData+i)) == FLASH_COMPLETE)
-    {
+    if (FLASH_ProgramWord(*pwAddr, *(uint32_t*)(pData+i)) == FLASH_COMPLETE){
       if (*(uint32_t*)*pwAddr != *(uint32_t*)(pData+i)){
         return(2);
       }
-     
       *pwAddr += 4;
     }else{
-      
       return (1);
     }
   }

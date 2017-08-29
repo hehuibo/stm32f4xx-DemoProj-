@@ -100,6 +100,7 @@ void vMainTask(void){
   
   if(FSM_IsOn(g_FSM.FSM_FLAG_UART4RXED)){
     FSM_SetOff(g_FSM.FSM_FLAG_UART4RXED);	
+    
     #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
     dbgTRACE("RxBuffer:\n");
     for(int i=0; i<g_AppCommBfrMnt.mRxLen; i++){
@@ -109,10 +110,10 @@ void vMainTask(void){
     #endif 
   }
   
-  LwIP_Periodic_Handle();
+  LwIP_PeriodicHandle();
 }
 
-const pfFSMCallFunctionTYPE pFunCalled = {
+const pFSM_AryFUNCTION pfn_FSM = {
   vDelay10MSTask,
   vDelay1STask,
   vMainTask
