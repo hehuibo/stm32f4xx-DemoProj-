@@ -55,6 +55,7 @@ void FatFsTestDemo(void)
   FRESULT fres;
   FATFS *pfs;
   DWORD fre_clust, fre_sect, tot_sect;
+  //fres = f_mkfs("0:", FM_FAT, 0, work, sizeof(work));
   if((fres = f_mount(&fs, "0:", 1)) == FR_NO_FILESYSTEM){
     fres = f_mkfs("0:", FM_FAT, 0, work, sizeof(work));
     if(FR_OK == fres){
@@ -93,11 +94,13 @@ void AppTaskInit(void){
   
   //FatFsTestDemo();
   
-    USBD_Init(&USB_OTG_dev,
+#if 1
+  USBD_Init(&USB_OTG_dev,
             USB_OTG_FS_CORE_ID,
             &USR_desc,
             &USBD_MSC_cb,
             &USR_cb);
+#endif
 }
 
 /*******************10MSTask**************************/
@@ -147,7 +150,7 @@ void vDelay1STask(void){
   dbgTRACE("appStart\n");
   #endif 
   
-  //GPIO_ToggleBits(GPIOC,GPIO_Pin_8);
+  GPIO_ToggleBits(GPIOE,GPIO_Pin_2);
 }
 
 /***************MainTask*************************/
