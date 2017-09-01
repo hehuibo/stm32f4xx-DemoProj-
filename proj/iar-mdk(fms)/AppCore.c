@@ -9,6 +9,7 @@ uint16_t g_uiFSMDelay1S = FSM_TIMEOUT_1S;
 
 /*******************TargetInit**************************/
 /***初始化芯片内部资源***/
+USB_OTG_CORE_HANDLE  USB_OTG_dev;
 static void InitChipInternal(void){
   vConfigureRTC();
   
@@ -16,15 +17,19 @@ static void InitChipInternal(void){
   
   SPI1_Configure();
   
-  vTIM3_Init();
+  //vTIM3_Init();
   
-  vPWM_Init();
+  //vPWM_Init();
+  
+
 }
 
 /***初始化外围设备***/
 static void InitBoardPeripheral(void){
   
   Flash_Init();
+  
+  //FlashEraseChip(TFT_FLASHCS);
     
   InitParam();
   
@@ -38,6 +43,45 @@ static void AppTargetInit(void){
   vStartUpConfigure();
 }
 
+FATFS fs;
+FIL  fil;
+
+UINT    fnum;
+char fpath[100];
+char rbuffer[512];
+BYTE work[_MAX_SS];
+void FatFsTestDemo(void)
+{
+  FRESULT fres;
+  FATFS *pfs;
+  DWORD fre_clust, fre_sect, tot_sect;
+  if((fres = f_mount(&fs, "0:", 1)) == FR_NO_FILESYSTEM){
+    fres = f_mkfs("0:", FM_FAT, 0, work, sizeof(work));
+    if(FR_OK == fres){
+      f_mount(NULL, "0:", 1);
+      fres = f_mount(&fs, "0:", 1);
+    }
+  }
+  
+  if(FR_OK == fres){
+    #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
+    dbgTRACE("Fs Mount OK\n");
+    #endif 
+  }else{
+    #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
+    dbgTRACE("Fs Mount ERR,res = %d\n",fres);
+    #endif
+  }
+  
+  /*获取设备信息*/
+  fres = f_getfree("0:", &fre_clust, &pfs);
+  tot_sect = (pfs->n_fatent - 2)*pfs->csize;/*扇区个数*/
+  fre_sect = fre_clust * pfs->csize;
+  #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
+  dbgTRACE(">>设备总空间: %10lu KB\n>>可用空间: %10lu KB", tot_sect*4, fre_sect*4);
+  #endif
+}
+
 void AppTaskInit(void){
   AppTargetInit();
   
@@ -47,6 +91,13 @@ void AppTaskInit(void){
   /***初始化外围设备***/
   InitBoardPeripheral(); 
   
+  //FatFsTestDemo();
+  
+    USBD_Init(&USB_OTG_dev,
+            USB_OTG_FS_CORE_ID,
+            &USR_desc,
+            &USBD_MSC_cb,
+            &USR_cb);
 }
 
 /*******************10MSTask**************************/

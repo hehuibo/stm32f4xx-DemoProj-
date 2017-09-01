@@ -70,6 +70,7 @@ typedef void (*pfFlashSpiFUNCTION[])(void);
 
 /*********Config**********/
 #define FLASH_CS_NUM    1
+
 enum eFlashCSTYPE{
   eFLASH_ID_CS0 = 0,
   eFLASH_ID_CS1 = 1,
@@ -79,7 +80,8 @@ enum eFlashCSTYPE{
 };
 
 //×ÖÌå´æÈ¡
-#define GUIFONT_FLASHCS     eFLASH_ID_CS2
+#define GUIFONT_FLASHCS     eFLASH_ID_CS0
+#define TFT_FLASHCS         GUIFONT_FLASHCS
 
 #define FLASH_CS0_PIN		GPIO_Pin_4
 #define FLASH_CS0_PORT		GPIOA//GPIOE

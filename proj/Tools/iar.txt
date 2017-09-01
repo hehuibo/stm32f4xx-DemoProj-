@@ -37,6 +37,13 @@ $PROJ_DIR$\..\..\src\3rdPart\Kernel\inc
 $PROJ_DIR$\..\..\src\3rdPart\Kernel\ports\IAR
 
 
+USE_USB_OTG_FS
+USE_EMBEDDED_PHY
 
+$PROJ_DIR$\..\..\src\Comm\Core\inc\USB
+$PROJ_DIR$\..\..\src\Chip\STM32F40x\USB-Host-Device_Lib\STM32_USB_OTG_Driver\inc
+$PROJ_DIR$\..\..\src\Chip\STM32F40x\USB-Host-Device_Lib\STM32_USB_Device_Library\Class\msc\inc
+$PROJ_DIR$\..\..\src\Chip\STM32F40x\USB-Host-Device_Lib\STM32_USB_Device_Library\Core\inc
 
+$PROJ_DIR$\..\..\src\3rdPart\FatFs\inc
 

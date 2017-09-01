@@ -215,7 +215,9 @@
                     <state>STM32F40_41xxx</state>
                     <state>USE_STDPERIPH_DRIVER</state>
                     <state>_NoRTOSKernel</state>
-                    <state>UART_TRACE</state>
+                    <state>JLINK_RTT_TRACE</state>
+                    <state>USE_USB_OTG_FS</state>
+                    <state>USE_EMBEDDED_PHY</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -355,6 +357,11 @@
                     <state>$PROJ_DIR$\..\..\src\utlis\inc\debug\RTT</state>
                     <state>$PROJ_DIR$\..\..\src\Comm\Param\inc</state>
                     <state>$PROJ_DIR$\..\..\src\Comm\Core\inc\system</state>
+                    <state>$PROJ_DIR$\..\..\src\3rdPart\FatFs\inc</state>
+                    <state>$PROJ_DIR$\..\..\src\Comm\Core\inc\USB</state>
+                    <state>$PROJ_DIR$\..\..\src\Chip\STM32F40x\USB-Host-Device_Lib\STM32_USB_OTG_Driver\inc</state>
+                    <state>$PROJ_DIR$\..\..\src\Chip\STM32F40x\USB-Host-Device_Lib\STM32_USB_Device_Library\Class\msc\inc</state>
+                    <state>$PROJ_DIR$\..\..\src\Chip\STM32F40x\USB-Host-Device_Lib\STM32_USB_Device_Library\Core\inc</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -2068,6 +2075,33 @@
     <group>
         <name>3rdpart</name>
         <group>
+            <name>FatFs</name>
+            <group>
+                <name>cfg</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\3rdPart\FatFs\inc\diskio.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\3rdPart\FatFs\inc\ffconf.h</name>
+                </file>
+            </group>
+            <group>
+                <name>src</name>
+                <group>
+                    <name>opt</name>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\src\3rdPart\FatFs\src\opt\cc936.c</name>
+                    </file>
+                </group>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\3rdPart\FatFs\src\diskio.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\3rdPart\FatFs\src\ff.c</name>
+                </file>
+            </group>
+        </group>
+        <group>
             <name>Lwip</name>
             <group>
                 <name>api</name>
@@ -2222,6 +2256,9 @@
             <file>
                 <name>$PROJ_DIR$\..\..\src\Chip\PeriphDriver\src\IR.c</name>
             </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\src\Chip\PeriphDriver\src\SDIO.c</name>
+            </file>
         </group>
         <group>
             <name>stm32f4xx</name>
@@ -2297,6 +2334,54 @@
                     <name>$PROJ_DIR$\..\..\src\Chip\STM32F40x\STM32F4xx_StdPeriph_Driver\src\STM32F4xxStdPeriphLib.a</name>
                 </file>
             </group>
+            <group>
+                <name>USB-Host-Device_Lib_V2.2.0</name>
+                <group>
+                    <name>USB_Device_Library</name>
+                    <group>
+                        <name>class</name>
+                        <group>
+                            <name>msc</name>
+                            <file>
+                                <name>$PROJ_DIR$\..\..\src\Chip\STM32F40x\USB-Host-Device_Lib\STM32_USB_Device_Library\Class\msc\src\usbd_msc_bot.c</name>
+                            </file>
+                            <file>
+                                <name>$PROJ_DIR$\..\..\src\Chip\STM32F40x\USB-Host-Device_Lib\STM32_USB_Device_Library\Class\msc\src\usbd_msc_core.c</name>
+                            </file>
+                            <file>
+                                <name>$PROJ_DIR$\..\..\src\Chip\STM32F40x\USB-Host-Device_Lib\STM32_USB_Device_Library\Class\msc\src\usbd_msc_data.c</name>
+                            </file>
+                            <file>
+                                <name>$PROJ_DIR$\..\..\src\Chip\STM32F40x\USB-Host-Device_Lib\STM32_USB_Device_Library\Class\msc\src\usbd_msc_scsi.c</name>
+                            </file>
+                        </group>
+                    </group>
+                    <group>
+                        <name>core</name>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\src\Chip\STM32F40x\USB-Host-Device_Lib\STM32_USB_Device_Library\Core\src\usbd_core.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\src\Chip\STM32F40x\USB-Host-Device_Lib\STM32_USB_Device_Library\Core\src\usbd_ioreq.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\src\Chip\STM32F40x\USB-Host-Device_Lib\STM32_USB_Device_Library\Core\src\usbd_req.c</name>
+                        </file>
+                    </group>
+                </group>
+                <group>
+                    <name>USB_OTG_Driver</name>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\src\Chip\STM32F40x\USB-Host-Device_Lib\STM32_USB_OTG_Driver\src\usb_core.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\src\Chip\STM32F40x\USB-Host-Device_Lib\STM32_USB_OTG_Driver\src\usb_dcd.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\src\Chip\STM32F40x\USB-Host-Device_Lib\STM32_USB_OTG_Driver\src\usb_dcd_int.c</name>
+                    </file>
+                </group>
+            </group>
         </group>
     </group>
     <group>
@@ -2316,6 +2401,21 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\src\Comm\Core\src\net\netio.c</name>
+                </file>
+            </group>
+            <group>
+                <name>usbMassStorage</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\Comm\Core\src\USB\usb_bsp.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\Comm\Core\src\USB\usbd_desc.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\Comm\Core\src\USB\usbd_storage_msd.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\Comm\Core\src\USB\usbd_usr.c</name>
                 </file>
             </group>
         </group>
