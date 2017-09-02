@@ -165,6 +165,10 @@ int8_t STORAGE_Init (uint8_t lun)
     return (-1); 
   } 
 #ekse
+  #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
+  dbgTRACE_FUNCTION();
+  #endif 
+  Flash_Init();
   struct _tag_DataFlash* pDataFlash = getCurrFlash(TFT_FLASHCS);
   if(pDataFlash->id != getFlashID(TFT_FLASHCS)){
     return -1;
@@ -194,7 +198,10 @@ int8_t STORAGE_GetCapacity (uint8_t lun, uint32_t *block_num, uint32_t *block_si
   *block_num =  SDCardInfo.CardCapacity / 512;  
 #else 
   *block_size =  4096;  
-  *block_num =  1536; //8M:2048, 16M 4096
+  *block_num =  4096;//1536; //8M:2048, 16M 4096
+  #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
+  dbgTRACE_FUNCTION();
+  #endif 
 #endif  
   return (0);
   
@@ -213,6 +220,9 @@ int8_t  STORAGE_IsReady (uint8_t lun)
     return (-1);
   }  
 #endif
+  #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
+  dbgTRACE_FUNCTION();
+  #endif 
   return (0);
 }
 
@@ -223,6 +233,9 @@ int8_t  STORAGE_IsReady (uint8_t lun)
   */
 int8_t  STORAGE_IsWriteProtected (uint8_t lun)
 {
+  #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
+  dbgTRACE_FUNCTION();
+  #endif 
   return  0;
 }
 
@@ -250,8 +263,12 @@ int8_t STORAGE_Read (uint8_t lun,
   SD_WaitReadOperation();
   while (SD_GetStatus() != SD_TRANSFER_OK);
 #else
-  blk_addr += 512;
+  //blk_addr += 512;
+  #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
+  dbgTRACE_FUNCTION();
+  #endif 
   FlashRead(blk_addr << 12, buf, blk_len<<12, TFT_FLASHCS);
+  
 #endif  
   return 0;
 }
@@ -279,8 +296,11 @@ int8_t STORAGE_Write (uint8_t lun,
   SD_WaitWriteOperation();
   while (SD_GetStatus() != SD_TRANSFER_OK);  
 #else
-  blk_addr += 512;
-  FlashErase4K(blk_addr << 12, TFT_FLASHCS);
+  //blk_addr += 512;
+  //FlashErase4K(blk_addr << 12, TFT_FLASHCS);
+  #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
+  dbgTRACE_FUNCTION();
+  #endif 
   FlashWrite(blk_addr << 12, buf, blk_len<<12, TFT_FLASHCS);
 #endif
   

@@ -49,21 +49,13 @@ FIL  fil;
 UINT    fnum;
 char fpath[100];
 char rbuffer[512];
-BYTE work[_MAX_SS];
 void FatFsTestDemo(void)
 {
   FRESULT fres;
   FATFS *pfs;
   DWORD fre_clust, fre_sect, tot_sect;
-  //fres = f_mkfs("0:", FM_FAT, 0, work, sizeof(work));
-  if((fres = f_mount(&fs, "0:", 1)) == FR_NO_FILESYSTEM){
-    fres = f_mkfs("0:", FM_FAT, 0, work, sizeof(work));
-    if(FR_OK == fres){
-      f_mount(NULL, "0:", 1);
-      fres = f_mount(&fs, "0:", 1);
-    }
-  }
   
+  fres = f_mount(&fs, "0:", 1);
   if(FR_OK == fres){
     #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
     dbgTRACE("Fs Mount OK\n");
@@ -94,12 +86,8 @@ void AppTaskInit(void){
   
   //FatFsTestDemo();
   
-#if 1
-  USBD_Init(&USB_OTG_dev,
-            USB_OTG_FS_CORE_ID,
-            &USR_desc,
-            &USBD_MSC_cb,
-            &USR_cb);
+#if 0
+
 #endif
 }
 
@@ -157,12 +145,60 @@ void vDelay1STask(void){
 
 void vMainTask(void){
   
-  if(FSM_IsOn(g_FSM.FSM_FLAG_UART4RXED)){
-    FSM_SetOff(g_FSM.FSM_FLAG_UART4RXED);	
+  if(FSM_IsOn(g_FSM.FSM_FLAG_USART1RXED)){
+    FSM_SetOff(g_FSM.FSM_FLAG_USART1RXED);	
     #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
-    dbgTRACE("RxBuffer:\n");
-    for(int i=0; i<g_AppCommBfrMnt.mRxLen; i++){
-      dbgTRACE("%x ",g_AppCommBfrMnt.pRxBfr[i]);
+    dbgTRACE("RxBuffer[0]:%c\n", g_AppCommBfrMnt.pRxBfr[0]);
+    switch(g_AppCommBfrMnt.pRxBfr[0]){
+      case '0':{
+       #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
+          dbgTRACE("Erase Flash\n");
+       #endif 
+        FlashEraseChip(TFT_FLASHCS);
+        FRESULT fres = f_mount(&fs, "0:", 0);
+        if(FR_OK == fres){
+          #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
+          dbgTRACE("Fs Mount OK\n");
+          #endif 
+        }else{
+          #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
+          dbgTRACE("Fs Mount ERR,res = %d\n",fres);
+          #endif
+        }
+        
+        fres = f_mkfs("0:", 0, 0);
+        if(FR_OK == fres){
+          #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
+          dbgTRACE("Fat format OK\n");
+          #endif 
+        }else{
+          #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
+          dbgTRACE("Fat format  ERR,res = %d\n",fres);
+          #endif
+        }
+        
+        fres = f_mount(NULL, "0:", 0);
+        if(FR_OK == fres){
+          #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
+          dbgTRACE("Fs unMount OK\n");
+          #endif 
+        }else{
+          #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
+          dbgTRACE("Fs unMount ERR,res = %d\n",fres);
+          #endif
+        }
+        
+      }
+      break;
+      
+      case '1':{
+    USBD_Init(&USB_OTG_dev,
+              USB_OTG_FS_CORE_ID,
+              &USR_desc,
+              &USBD_MSC_cb,
+              &USR_cb);
+      }
+      break;
     }
     dbgTRACE("\n");  
     #endif 

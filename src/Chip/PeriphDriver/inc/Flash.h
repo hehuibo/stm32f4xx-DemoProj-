@@ -56,7 +56,7 @@ enum _tag_eFlashCmd
 #define FlashDelayms(x)  vTaskDelay(x)   
 #else
 extern void SysTickDlyMs(uint16_t ms);
-#define FlashDelayms(x)  SysTickDlyMs(x)
+#define FlashDelayms(x)  //SysTickDlyMs(x)
 #endif
 
 typedef struct _tag_FlashCSCtrlValTYPE
