@@ -29,6 +29,10 @@ void SPI1_SetSpeed(uint8_t SPI_BaudRatePrescaler);
 
 uint8_t SPI1_TxRxByte(uint8_t Dat);
 
+void SPI_DMATxData(void *buffer, int len);
+
+void SPI_DMARxData(void *buffer, int len);
+
 void SPI2_Configure(void);
 
 void SPI2_SetSpeed(uint8_t SPI_BaudRatePrescaler);

@@ -10,12 +10,13 @@
 
 #include "main.h"
 
-int main(void){
+int main(void)
+{
   uint8_t i = 0;
   AppTaskInit();
   while(1){
     for(i=0; i< MAX_FUNCITEM; i++){
-      pfn_FSM[i]();
+      pfnFSMTaskAry[i]();
     }
     i = 0;			
   }

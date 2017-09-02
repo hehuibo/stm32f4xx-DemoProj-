@@ -117,26 +117,36 @@ signed char FlashCommand(unsigned char cmd, int addr, const void *indat, void *o
   //Flash_SetSpeed();
   pfFlashTxRxAry[FlashCSNum](cmd);
   
+  /*发送命令*/
   if(addr != -1){
     pfFlashTxRxAry[FlashCSNum]((addr>>16)&0xFF);
     pfFlashTxRxAry[FlashCSNum]((addr>>8)&0xFF);
     pfFlashTxRxAry[FlashCSNum](addr&0xFF);
   }
-
+#if 0  
+  if(inbuf){/*写数据*/
+    SPI_DMATxData(inbuf, len);
+  }
+  
+  if(outbuf){/*读数据*/
+    SPI_DMARxData(inbuf, len);
+  }
+#else
+  /*读写数据*/
   while(len-- > 0){
     unsigned char tmp;
-    if(inbuf){
+    if(inbuf){/*写数据*/
       tmp = *inbuf++;
     }else{
       tmp = 0;
     }
 
     tmp = pfFlashTxRxAry[FlashCSNum](tmp);
-    if(outbuf){
+    if(outbuf){/*读数据*/
       *outbuf++ = tmp;
     }
   }/*while(len-- > 0)*/
-
+#endif
   GPIO_SetBits(gxFlashCSCtrlValAry[FlashCSNum].mGPIOx, gxFlashCSCtrlValAry[FlashCSNum].mBasePin);
  
   switch(cmd){

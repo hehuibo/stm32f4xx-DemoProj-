@@ -46,7 +46,7 @@ void vUSART1_Configure(u32 nBaudRate)
   USART_Cmd(USART1,ENABLE);
 }
 
-#if defined (_LOADER)
+//#if defined (_LOADER)
 void USART1_IRQHandler(void){
     if(USART_GetITStatus(USART1, USART_IT_RXNE) == SET){
          
@@ -60,6 +60,6 @@ void USART1_IRQHandler(void){
     }
     USART_ClearITPendingBit(USART1, USART_IT_RXNE);
 }
-#endif
+//#endif
 
 

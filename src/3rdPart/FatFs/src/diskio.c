@@ -74,13 +74,11 @@ DRESULT disk_read (
 	UINT count		/* Number of sectors to read */
 )
 {
-	DRESULT res = RES_PARERR;
-
 	switch (pdrv) {
       case DEV_FLASH :{
-        sector += 512;/*扇区偏移2M,外部Flash文件系统存放在后6M*/
+        //sector += 512;/*扇区偏移2M,外部Flash文件系统存放在后6M*/
         FlashRead(sector << 12, buff, count << 12, TFT_FLASHCS);
-        res = RES_OK;
+        return RES_OK;
       }
       break;
       
@@ -88,7 +86,7 @@ DRESULT disk_read (
       break;
 	}
 
-	return res;
+	return RES_PARERR;
 }
 
 
@@ -104,7 +102,6 @@ DRESULT disk_write (
 	UINT count			/* Number of sectors to write */
 )
 {
-	DRESULT res = RES_PARERR;
 
     if(!count){
       return RES_PARERR;
@@ -112,18 +109,17 @@ DRESULT disk_write (
     
 	switch (pdrv) {
       case DEV_FLASH :{
-        sector += 512;/*扇区偏移2M,外部Flash文件系统存放在后6M*/
+        //sector += 512;/*扇区偏移2M,外部Flash文件系统存放在后6M*/
         FlashErase4K(sector << 12, TFT_FLASHCS);
         FlashWrite(sector << 12, (void *)buff, count << 12, TFT_FLASHCS);
-        res = RES_OK;
+        return RES_OK;
       }
-      break;
       
     default :
       break;
 	}
 
-	return res;
+	return RES_PARERR;
 }
 
 
@@ -138,32 +134,35 @@ DRESULT disk_ioctl (
 	void *buff		/* Buffer to send/receive control data */
 )
 {
-	DRESULT res = RES_PARERR;
 
 	switch (pdrv) {
       case DEV_FLASH :{
         switch(cmd){
-          case GET_SECTOR_COUNT:
-            /* 扇区数量: 1536*4096/1024/1024=6(MB) */
-            *(DWORD * )buff = 1536;		
-          break;
-          /* 扇区大小 */
-          case GET_SECTOR_SIZE :
+          
+          case GET_SECTOR_COUNT:/* 扇区数量: 1536*4096/1024/1024=6(MB) */
+            *(DWORD * )buff = 4096;		
+            return  RES_OK;
+            
+          
+          case GET_SECTOR_SIZE :/* 扇区大小 */
             *(WORD * )buff = 4096;
-          break;
+            return  RES_OK;
+            
           /*同时擦除扇区个数*/
+          case CTRL_SYNC : 
+          case CTRL_TRIM:
           case GET_BLOCK_SIZE :
-            *(DWORD * )buff = 1;
-          break;        
+            return  RES_OK;
+                 
         }
-       res = RES_OK;
+       
       }
       break;
       
     default:break;
 	}
 
-	return res;
+	return RES_PARERR;
 }
 
 DWORD get_fattime(void) {

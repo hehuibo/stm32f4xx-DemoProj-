@@ -10,7 +10,8 @@
 #include "stm32f4xx.h"
 #include "GPIO.h"
 
-void vGPIO_Configure(void){
+void vGPIO_Configure(void)
+{
   GPIO_InitTypeDef  GPIO_InitStructure;
   
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE,ENABLE);

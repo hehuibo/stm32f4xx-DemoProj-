@@ -2518,6 +2518,9 @@
             <group>
                 <name>comm</name>
                 <file>
+                    <name>$PROJ_DIR$\..\..\src\Chip\STM32F40x\Comm\src\ADC.c</name>
+                </file>
+                <file>
                     <name>$PROJ_DIR$\..\..\src\Chip\STM32F40x\Comm\src\GPIO.c</name>
                 </file>
                 <file>

@@ -215,7 +215,7 @@
                     <state>STM32F40_41xxx</state>
                     <state>USE_STDPERIPH_DRIVER</state>
                     <state>_NoRTOSKernel</state>
-                    <state>UART_TRACE</state>
+                    <state>JLINK_RTT_TRACE</state>
                     <state>USE_USB_OTG_FS</state>
                     <state>USE_EMBEDDED_PHY</state>
                 </option>
@@ -2276,6 +2276,9 @@
             </group>
             <group>
                 <name>comm</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\Chip\STM32F40x\Comm\src\ADC.c</name>
+                </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\src\Chip\STM32F40x\Comm\src\GPIO.c</name>
                 </file>

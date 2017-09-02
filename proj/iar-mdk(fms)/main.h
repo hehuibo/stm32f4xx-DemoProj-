@@ -23,8 +23,8 @@
 
 #define MAX_FUNCITEM 3
 
-typedef void(*pFSM_AryFUNCTION[])(void);
-extern const pFSM_AryFUNCTION pfn_FSM;
+typedef void(*pfnFSM_AryFUNCTION[])(void);
+extern const pfnFSM_AryFUNCTION pfnFSMTaskAry;
 
 /******Task******/
 void AppTaskInit(void);
