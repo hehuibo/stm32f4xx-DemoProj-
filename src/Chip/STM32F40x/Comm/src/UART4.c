@@ -46,7 +46,7 @@ void vUART4_Configure(u32 nBaudRate)
   USART_Cmd(UART4,ENABLE);
 }
 
-#if defined (_LOADER)
+//#if defined (_LOADER)
 void UART4_IRQHandler(void){
     if(USART_GetITStatus(UART4, USART_IT_RXNE) == SET){
          
@@ -60,6 +60,6 @@ void UART4_IRQHandler(void){
     }
     USART_ClearITPendingBit(UART4, USART_IT_RXNE);
 }
-#endif
+//#endif
 
 

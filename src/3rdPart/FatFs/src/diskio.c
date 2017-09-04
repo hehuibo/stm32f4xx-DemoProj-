@@ -140,7 +140,7 @@ DRESULT disk_ioctl (
         switch(cmd){
           
           case GET_SECTOR_COUNT:/* ÉÈÇøÊýÁ¿: 1536*4096/1024/1024=6(MB) */
-            *(DWORD * )buff = 4096;		
+            *(DWORD * )buff = 2048;//4096;		
             return  RES_OK;
             
           

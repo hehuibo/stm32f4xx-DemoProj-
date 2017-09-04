@@ -198,7 +198,7 @@ int8_t STORAGE_GetCapacity (uint8_t lun, uint32_t *block_num, uint32_t *block_si
   *block_num =  SDCardInfo.CardCapacity / 512;  
 #else 
   *block_size =  4096;  
-  *block_num =  4096;//1536; //8M:2048, 16M 4096
+  *block_num =  2048;//1536; //8M:2048, 16M 4096
   #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
   dbgTRACE_FUNCTION();
   #endif 
@@ -297,7 +297,7 @@ int8_t STORAGE_Write (uint8_t lun,
   while (SD_GetStatus() != SD_TRANSFER_OK);  
 #else
   //blk_addr += 512;
-  //FlashErase4K(blk_addr << 12, TFT_FLASHCS);
+  FlashErase4K(blk_addr << 12, TFT_FLASHCS);
   #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
   dbgTRACE_FUNCTION();
   #endif 

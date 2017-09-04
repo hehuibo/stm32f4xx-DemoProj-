@@ -18,9 +18,9 @@ const struct data_flash_dev data_flash_ids[]=
 /*
  *	SST芯片
  */
-	{ "SST25VF080",   0x8E25BF, 0xFFFFFF,  0x1000,  SIZE_K(512),    0x1000,  1	},	
-	{ "SST25VF016",   0x4125BF, 0xFFFFFF,  0x1000,  SIZE_M(2), 	    0x1000,  1	},
-	{ "SST25VF032",   0x4a25BF, 0xFFFFFF,  0x1000,  SIZE_M(4), 	    0x1000,  1	},	
+	{ "SST25VF080",   0x8E25BF, 0xFFFFFF,  0x1000,  SIZE_K(512), 0x1000,  1	},	
+	{ "SST25VF016",   0x4125BF, 0xFFFFFF,  0x1000,  SIZE_M(2), 	 0x1000,  1	},
+	{ "SST25VF032",   0x4a25BF, 0xFFFFFF,  0x1000,  SIZE_M(4),   0x1000,  1	},	
 /*
  *	Atemal设备
  *	第一字节	0x1F	厂商
@@ -37,14 +37,15 @@ const struct data_flash_dev data_flash_ids[]=
 	//4125bf
 	{ "AT25VF016A",		0x471F,  0xE0FFFF,  0x1000,  SIZE_M(4)  , 0x1000,  0	},	
 	
+//	bf4125bf
 
 /*
  *	MX芯片
  */
-	{ "MX25L3206E",   0xc22016, 0xFFFFFF,  0x1000,  SIZE_M(4)  , 0x1000,  0	},	
+	{ "MX25L3206E",   0xc22016, 0xFFFFFF,  0x1000,  SIZE_M(4)  , 0x1000,  0	},
 	{ "MX25L6406E",   0x1720c2, 0xFFFFFF,  0x1000,  SIZE_M(8)  , 0x1000,  0	},	
 	{ "MX25L3206E",   0x1620c2, 0xFFFFFF,  0x1000,  SIZE_M(4)  , 0x1000,  0	},	
-	{ "MX25L12835F",  0x1820c2, 0xFFFFFF,  0x1000,  SIZE_M(16) , 0x1000,  0	},	
+	{ "MX25L12835F",  0x1820c2, 0xFFFFFF,  0x1000,  SIZE_M(16) , 0x1000,  0 },	
 /*
  *	结束
  */
@@ -52,23 +53,30 @@ const struct data_flash_dev data_flash_ids[]=
 };
 
 //FlashCS
-const xTFlashCSCtrlValTypeDef gxFlashCSCtrlValAry[FLASH_CS_NUM] = {
+const FlashCSCtrlValTYPE gsFlashCSCtrlValAryTbl[FLASH_CS_NUM] = {
   {FLASH_CS0_PORT, FLASH_CS0_PIN},  /*eFLASH_ID_CS0*/
+  {FLASH_CS1_PORT, FLASH_CS1_PIN},  /*eFLASH_ID_CS1*/
+  {FLASH_CS2_PORT, FLASH_CS2_PIN}   /*eFLASH_ID_CS2*/
 };
 
 //Flash SPI
-const pfFlashTxRxFUNCTION pfFlashTxRxAry = {
+const pfFlashTxRxFuncTYPE pfFlashTxRxAryTbl = {
   SPI1_TxRxByte,
+  SPI1_TxRxByte,
+  SPI2_TxRxByte
 };
 
-/*SPI Lock*/
 #if defined (FreeRTOS_Kernel) 
-const pfFlashSpiFUNCTION pfFlashSpiLockAry = {
+const pfFlashSpiFuncTYPE pfFlashSpiLockFuncAryTbl = {
   SPI1_Lock,
+  SPI1_Lock,
+  SPI2_Lock
 };
 
-const pfFlashSpiFUNCTION pfFlashSpiUnLockAry = {
+const pfFlashSpiFuncTYPE pfFlashSpiUnLockFuncAryTbl = {
   SPI1_Unlock,
+  SPI1_Unlock,
+  SPI2_Unlock
 };
 #endif
 
@@ -85,6 +93,18 @@ void FlashPortInit(void)
   
   GPIO_InitStructure.GPIO_Pin = FLASH_CS0_PIN;
   GPIO_Init(FLASH_CS0_PORT, &GPIO_InitStructure);
+  
+  GPIO_InitStructure.GPIO_Pin = FLASH_CS1_PIN;
+  GPIO_Init(FLASH_CS1_PORT, &GPIO_InitStructure);
+  
+  GPIO_InitStructure.GPIO_Pin = FLASH_CS2_PIN;
+  GPIO_Init(FLASH_CS2_PORT, &GPIO_InitStructure);
+  
+  GPIO_InitStructure.GPIO_Pin = FLASH_CS3_PIN;
+  GPIO_Init(FLASH_CS3_PORT, &GPIO_InitStructure);
+  
+  GPIO_InitStructure.GPIO_Pin = FLASH_CS4_PIN;
+  GPIO_Init(FLASH_CS4_PORT, &GPIO_InitStructure);
 }
 
 

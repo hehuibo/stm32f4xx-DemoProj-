@@ -69,7 +69,7 @@ void SPI1_Configure(void){
   SPI_Cmd(SPI1, ENABLE); 
 	
 #if defined (FreeRTOS_Kernel)
-  gs_xSpi1Mutex = xSemaphoreCreateMutex();
+	gs_xSpi1Mutex = xSemaphoreCreateMutex();
 #endif
     
 }
@@ -83,13 +83,15 @@ void SPI1_SetSpeed(uint8_t SPI_BaudRatePrescaler){
 uint8_t SPI1_TxRxByte(uint8_t Dat){
   uint8_t t=0;				 	
   while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET){
-    if(++t>250)return 0;
+    t++;
+    if(t>250)return 0;
   }			  
   SPI_I2S_SendData(SPI1, Dat); 
   
   t=0;
   while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE) == RESET) {
-    if(++t>250)return 0;
+    t++;
+    if(t>250)return 0;
   }	  						    
   return SPI_I2S_ReceiveData(SPI1); 			    
 }

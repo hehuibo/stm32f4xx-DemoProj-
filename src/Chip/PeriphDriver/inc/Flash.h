@@ -29,24 +29,24 @@
 
 #define LISTBLKSIZE	             4096
 #define FLASHSECT(Addr)			((Addr)>>12)
-#define FLASHSECTADDR( addr ) 	(( addr )&(~(LISTBLKSIZE-1) )) /*该地址所在扇区的首地址*/
+#define FLASHSECTADDR( addr ) 	( ( addr )&(~(LISTBLKSIZE-1) ) )
 
 enum _tag_eFlashCmd
 {
    
-  eFlashCmd_WriteStatus         = 0x01,
-  eFlashCmd_Write               = 0x02,  /*Page Program*/
-  eFlashCmd_Read                = 0x03,
-  eFlashCmd_WriteDisable        = 0x04,
-  eFlashCmd_ReadStatus          = 0x05,
-  eFlashCmd_WriteEnable         = 0x06,
+  iFlashCmd_WriteStatus         = 0x01,
+  iFlashCmd_Write               = 0x02,  /*Page Program*/
+  iFlashCmd_Read                = 0x03,
+  iFlashCmd_WriteDisable        = 0x04,
+  iFlashCmd_ReadStatus          = 0x05,
+  iFlashCmd_WriteEnable         = 0x06,
   
-  eFlashCmd_Erase4K             = 0x20, /*Sector Erase*/
-  eFlashCmd_Erase32K            = 0x52, /* 32k Block Erase*/
-  eFlashCmd_Erase64K            = 0xD8, /*64K Block Erase*/
-  eFlashCmd_EraseAll            = 0xC7, /*Chip Erase*/
+  iFlashCmd_Erase4K             = 0x20, /*Sector Erase*/
+  iFlashCmd_Erase32K            = 0x52, /* 32k Block Erase*/
+  iFlashCmd_Erase64K            = 0xD8, /*64K Block Erase*/
+  iFlashCmd_EraseAll            = 0xC7, /*Chip Erase*/
   
-  eFlashCmd_DeviceID            = 0x9F,
+  iFlashCmd_DeviceID            = 0x9F,
   
   /**/
   eFlash_DummyByte              = 0x00,
@@ -59,38 +59,76 @@ extern void SysTickDlyMs(uint16_t ms);
 #define FlashDelayms(x)  //SysTickDlyMs(x)
 #endif
 
-typedef struct _tag_FlashCSCtrlValTYPE
+typedef struct _tag_FlashCSCtrlVal
 {
   GPIO_TypeDef* mGPIOx;
   unsigned int mBasePin;
-}xTFlashCSCtrlValTypeDef;
+}FlashCSCtrlValTYPE;
 
-typedef uint8_t(*pfFlashTxRxFUNCTION[])(uint8_t);
-typedef void (*pfFlashSpiFUNCTION[])(void);
+typedef uint8_t(*pfFlashTxRxFuncTYPE[])(uint8_t);
+typedef void (*pfFlashSpiFuncTYPE[])(void);
 
 /*********Config**********/
-#define FLASH_CS_NUM    1
-
+#define FLASH_CS_NUM    3
 enum eFlashCSTYPE{
   eFLASH_ID_CS0 = 0,
   eFLASH_ID_CS1 = 1,
   eFLASH_ID_CS2 = 2,
   eFLASH_ID_CS3 = 3,
-  eFLASH_ID_CS4 = 4
+  eFLASH_ID_CS4 = 4,
+  eFLASH_ID_MAX
 };
 
 //字体存取
-#define GUIFONT_FLASHCS     eFLASH_ID_CS0
+#define GUIFONT_FLASHCS     eFLASH_ID_CS2
 #define TFT_FLASHCS         GUIFONT_FLASHCS
 
+#if 1
 #define FLASH_CS0_PIN		GPIO_Pin_4
-#define FLASH_CS0_PORT		GPIOE //GPIOA//
-#define FLASH_CS0_GPIOCLK	RCC_AHB1Periph_GPIOE
+#define FLASH_CS0_PORT		GPIOA
+#define FLASH_CS0_GPIOCLK	RCC_AHB1Periph_GPIOA
 
-#define FLASH_CSPORT_CLK    (FLASH_CS0_GPIOCLK)
+#define FLASH_CS1_PIN		GPIO_Pin_5
+#define FLASH_CS1_PORT		GPIOA
+#define FLASH_CS1_GPIOCLK	RCC_AHB1Periph_GPIOA
 
-#define Flash_TxRxByte	SPI1_TxRxByte
-#define Flash_SetSpeed	SPI1_SetSpeed
+
+#define FLASH_CS2_PIN		GPIO_Pin_11
+#define FLASH_CS2_PORT		GPIOF
+#define FLASH_CS2_GPIOCLK	RCC_AHB1Periph_GPIOF
+
+#define FLASH_CS3_PIN		GPIO_Pin_8
+#define FLASH_CS3_PORT		GPIOA
+#define FLASH_CS3_GPIOCLK	RCC_AHB1Periph_GPIOA
+
+#define FLASH_CS4_PIN		GPIO_Pin_11
+#define FLASH_CS4_PORT		GPIOF
+#define FLASH_CS4_GPIOCLK	RCC_AHB1Periph_GPIOF
+#else
+#define FLASH_CS0_PIN		GPIO_Pin_8
+#define FLASH_CS0_PORT		GPIOA
+#define FLASH_CS0_GPIOCLK	RCC_AHB1Periph_GPIOA
+
+#define FLASH_CS1_PIN		GPIO_Pin_9
+#define FLASH_CS1_PORT		GPIOA
+#define FLASH_CS1_GPIOCLK	RCC_AHB1Periph_GPIOA
+
+
+#define FLASH_CS2_PIN		GPIO_Pin_10
+#define FLASH_CS2_PORT		GPIOF
+#define FLASH_CS2_GPIOCLK	RCC_AHB1Periph_GPIOF
+
+#define FLASH_CS3_PIN		GPIO_Pin_11
+#define FLASH_CS3_PORT		GPIOF
+#define FLASH_CS3_GPIOCLK	RCC_AHB1Periph_GPIOF
+
+#define FLASH_CS4_PIN		GPIO_Pin_11
+#define FLASH_CS4_PORT		GPIOA
+#define FLASH_CS4_GPIOCLK	RCC_AHB1Periph_GPIOA
+#endif
+
+
+#define FLASH_CSPORT_CLK    (FLASH_CS0_GPIOCLK|FLASH_CS1_GPIOCLK|FLASH_CS2_GPIOCLK|FLASH_CS3_GPIOCLK|FLASH_CS4_GPIOCLK)
 
 
 /**
@@ -104,17 +142,19 @@ enum eFlashCSTYPE{
  * @options:	Bitfield to store chip relevant options
  */
 struct data_flash_dev {
-  char *name;
-  unsigned int id;
-  unsigned int idmask;
-  unsigned long pagesize;
-  unsigned long chipsize;
-  unsigned long erasesize;
-  unsigned long options;
+	char *name;
+	unsigned int id;
+	unsigned int idmask;
+	unsigned long pagesize;
+	unsigned long chipsize;
+	unsigned long erasesize;
+	unsigned long options;
 };
 
 #define SIZE_K(n)	( (n) *1024 )
 #define SIZE_M(n)	( (n) *1024 * 1024 )
+
+extern const struct data_flash_dev data_flash_ids[];
 
 struct _tag_DataFlash
 {

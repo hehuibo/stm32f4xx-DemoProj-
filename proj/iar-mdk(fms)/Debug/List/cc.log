@@ -3,9 +3,9 @@ Creating copy init batch C1 (Table) for P1 -> P4, auto
   First match: .data (AppCore.o #9)
 Selecting packing algorithm for 'auto' batches
   Estimating size for copy init batch C1 (P1 -> P4):
-      copy: 6012 bytes
-      packbits: 354 bytes
-      lz77: 241 bytes
+      copy: 6132 bytes
+      packbits: 399 bytes
+      lz77: 261 bytes
     Selecting lz77
   Using "packbits" instead of "lz77" everywhere reduces total estimated
-    overhead from 741 to 512
+    overhead from 761 to 557
