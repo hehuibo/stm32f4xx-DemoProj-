@@ -78,17 +78,14 @@ enum eFlashCSTYPE{
 };
 
 //×ÖÌå´æÈ¡
-#define GUIFONT_FLASHCS     eFLASH_ID_CS2
+#define GUIFONT_FLASHCS     eFLASH_ID_CS0
+#define TFT_FLASHCS         GUIFONT_FLASHCS  
 
-#define FLASH_CS0_PIN		GPIO_Pin_4
-#define FLASH_CS0_PORT		GPIOE
-#define FLASH_CS0_GPIOCLK	RCC_AHB1Periph_GPIOE
-
+#define FLASH_CS0_PIN		GPIO_Pin_11 //GPIO_Pin_4
+#define FLASH_CS0_PORT		GPIOF
+#define FLASH_CS0_GPIOCLK	RCC_AHB1Periph_GPIOF
 
 #define FLASH_CSPORT_CLK    (FLASH_CS0_GPIOCLK)
-
-#define Flash_TxRxByte	SPI1_TxRxByte
-#define Flash_SetSpeed	SPI1_SetSpeed
 
 
 /**

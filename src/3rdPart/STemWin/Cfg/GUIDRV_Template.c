@@ -159,6 +159,7 @@ static void _SetPixelIndex(GUI_DEVICE * pDevice, int x, int y, int PixelIndex) {
       //
       // TBD by customer...
       //
+      //TFT_PutPixel(xPhys, yPhys, PixelIndex);
     }
     #if (LCD_MIRROR_X == 0) && (LCD_MIRROR_Y == 0) && (LCD_SWAP_XY == 0)
       #undef xPhys

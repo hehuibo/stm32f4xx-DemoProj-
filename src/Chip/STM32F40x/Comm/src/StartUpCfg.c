@@ -51,7 +51,8 @@ void vStartUpConfigure(void)
 #ifdef _LOADER
   NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0);
 #else
-  NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x10000);
+  //NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x10000);
+  NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0);
   __ASM("CPSIE  I");
 #endif
 
@@ -77,8 +78,10 @@ void vStartUpConfigure(void)
   
   /* Set the NVIC PriorityGroup */
    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
-   
+  
+#if defined (_LOADER) || defined (_NoRTOSKernel)   
    AppCommBufferInit();
+#endif
    
 #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
     TRACE_Init();

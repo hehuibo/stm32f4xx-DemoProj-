@@ -15,12 +15,10 @@
 #include "GPIO.h"
 #include "SPI.h"
 #include "RTC.h"
-#include "ETH_EMAC.h"
 #include "Flash.h"
 #include "SRAM.h"
-#include "RFID\RFID.h"
 
-#include "CAN.h"
+#include "TFT.h"
 
 #include "Param.h"
 #include "MemMgr.h"

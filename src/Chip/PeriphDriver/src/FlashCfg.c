@@ -59,16 +59,16 @@ const FlashCSCtrlValTYPE gsFlashCSCtrlValAryTbl[FLASH_CS_NUM] = {
 
 //Flash SPI
 const pfFlashTxRxFuncTYPE pfFlashTxRxAryTbl = {
-  SPI1_TxRxByte,
+  SPI2_TxRxByte,
 };
 
 #if defined (FreeRTOS_Kernel) 
 const pfFlashSpiFuncTYPE pfFlashSpiLockFuncAryTbl = {
-  SPI1_Lock,
+  SPI2_Lock,
 };
 
 const pfFlashSpiFuncTYPE pfFlashSpiUnLockFuncAryTbl = {
-  SPI1_Unlock,
+  SPI2_Unlock,
 };
 #endif
 

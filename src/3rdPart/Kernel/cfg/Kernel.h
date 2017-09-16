@@ -24,7 +24,6 @@ typedef struct _tag_ThreadAttr{
 enum eThreadTYPE
 {
   eThreadTYPE_INIT,
-  eThreadTYPE_ETHINPUT,
   eThreadTYPE_MSGMNT,
   eThreadTYPE_GUI,
   eThreadTYPE_MAX

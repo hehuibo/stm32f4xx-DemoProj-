@@ -3,8 +3,6 @@
 
 /****Task Param****/
 #define TASK_PRIO_MSGMNT	8 /*MsgMnt      Task  */
-#define TASK_PRIO_ETH_INPUT	7 /*eth Input   Task  */
-#define TASK_PRIO_NETMNT	5 /*NetComm     Task  */
 #define TASK_PRIO_GUI		2 /*GUI         Task  */
 #define TASK_PRIO_INIT		1 /*Init        Task  */
 
@@ -13,8 +11,6 @@
 #define TASK_STACK_INIT         256
 #define TASK_STACK_GUI          512
 #define TASK_STACK_MSGMNT       256
-#define TASK_STACK_NETMNT       256
-#define TASK_STACK_ETH_INPUT    256
 
 
 #define DBSEVER_PORT    8090

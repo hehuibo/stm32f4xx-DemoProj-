@@ -66,7 +66,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>8.11.2.13604</state>
+                    <state>8.11.3.13977</state>
                 </option>
                 <option>
                     <name>GeneralEnableMisra</name>
@@ -215,7 +215,8 @@
                     <state>STM32F40_41xxx</state>
                     <state>USE_STDPERIPH_DRIVER</state>
                     <state>FreeRTOS_Kernel</state>
-                    <state>UART_TRACE</state>
+                    <state>STemWin_GUI</state>
+                    <state>JLINK_RTT_TRACE</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -349,20 +350,16 @@
                     <state>$PROJ_DIR$\..\..\src\utlis\inc</state>
                     <state>$PROJ_DIR$\..\..\src\utlis\inc\debug</state>
                     <state>$PROJ_DIR$\..\..\src\utlis\inc\debug\RTT</state>
-                    <state>$PROJ_DIR$\..\..\src\3rdPart\LwIP\netif</state>
-                    <state>$PROJ_DIR$\..\..\src\3rdPart\LwIP\include</state>
-                    <state>$PROJ_DIR$\..\..\src\3rdPart\LwIP\netif\ports</state>
-                    <state>$PROJ_DIR$\..\..\src\3rdPart\LwIP\include\ipv4</state>
                     <state>$PROJ_DIR$\..\..\src\3rdPart\Kernel\cfg</state>
                     <state>$PROJ_DIR$\..\..\src\3rdPart\Kernel\inc</state>
                     <state>$PROJ_DIR$\..\..\src\3rdPart\Kernel\ports\IAR</state>
                     <state>$PROJ_DIR$\..\..\src\3rdPart\STemWin\inc</state>
                     <state>$PROJ_DIR$\..\..\src\3rdPart\STemWin\Cfg</state>
+                    <state>$PROJ_DIR$\..\..\src\3rdPart\FatFs\inc</state>
                     <state>$PROJ_DIR$\..\..\src\Comm\Core\inc</state>
-                    <state>$PROJ_DIR$\..\..\src\Comm\Param\inc</state>
-                    <state>$PROJ_DIR$\..\..\src\Comm\Protocol\inc</state>
-                    <state>$PROJ_DIR$\..\..\src\Comm\Core\inc\list</state>
+                    <state>$PROJ_DIR$\..\..\src\Comm\Core\inc\gui</state>
                     <state>$PROJ_DIR$\..\..\src\Comm\Core\inc\system</state>
+                    <state>$PROJ_DIR$\..\..\src\Comm\Param\inc</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -2085,6 +2082,78 @@
     <group>
         <name>3rdpart</name>
         <group>
+            <name>emWin</name>
+            <group>
+                <name>cfg</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\3rdPart\STemWin\Cfg\GUIConf.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\3rdPart\STemWin\Cfg\GUIDRV_Template.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\3rdPart\STemWin\Cfg\LCDConf_FlexColor_Template.c</name>
+                </file>
+            </group>
+            <group>
+                <name>fonts</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\3rdPart\STemWin\Fonts\GUI_FontHZ12.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\3rdPart\STemWin\Fonts\GUI_FontHZ16.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\3rdPart\STemWin\Fonts\GUI_FontHZ24.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\3rdPart\STemWin\Fonts\GUI_FontHZ32.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\3rdPart\STemWin\Fonts\GUI_UC_EncodeNone.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\3rdPart\STemWin\Fonts\GUICharPEx.c</name>
+                </file>
+            </group>
+            <group>
+                <name>lib</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\3rdPart\STemWin\Lib\STemWin532_CM4_OS_IAR.a</name>
+                </file>
+            </group>
+            <group>
+                <name>os</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\3rdPart\STemWin\OS\GUI_X_OS.c</name>
+                </file>
+            </group>
+        </group>
+        <group>
+            <name>FatFs</name>
+            <group>
+                <name>cfg</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\3rdPart\FatFs\inc\diskio.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\3rdPart\FatFs\inc\ff.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\3rdPart\FatFs\inc\ffconf.h</name>
+                </file>
+            </group>
+            <group>
+                <name>src</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\3rdPart\FatFs\src\diskio.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\3rdPart\FatFs\src\ff.c</name>
+                </file>
+            </group>
+        </group>
+        <group>
             <name>kernel</name>
             <group>
                 <name>cfg</name>
@@ -2135,135 +2204,6 @@
                 </file>
             </group>
         </group>
-        <group>
-            <name>lwip</name>
-            <group>
-                <name>api</name>
-                <file>
-                    <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\api\api_lib.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\api\api_msg.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\api\err.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\api\netbuf.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\api\netdb.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\api\netifapi.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\api\sockets.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\api\tcpip.c</name>
-                </file>
-            </group>
-            <group>
-                <name>core</name>
-                <group>
-                    <name>ipv4</name>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\core\ipv4\autoip.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\core\ipv4\icmp.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\core\ipv4\igmp.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\core\ipv4\inet.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\core\ipv4\inet_chksum.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\core\ipv4\ip.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\core\ipv4\ip_addr.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\core\ipv4\ip_frag.c</name>
-                    </file>
-                </group>
-                <file>
-                    <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\core\def.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\core\dhcp.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\core\dns.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\core\init.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\core\mem.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\core\memp.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\core\netif.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\core\pbuf.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\core\raw.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\core\stats.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\core\sys.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\core\tcp.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\core\tcp_in.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\core\tcp_out.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\core\timers.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\core\udp.c</name>
-                </file>
-            </group>
-            <group>
-                <name>netif</name>
-                <group>
-                    <name>arch</name>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\netif\arch\sys_arch.c</name>
-                    </file>
-                </group>
-                <group>
-                    <name>ports</name>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\netif\ports\ethernetif.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\netif\ports\lwipopts.h</name>
-                    </file>
-                </group>
-                <file>
-                    <name>$PROJ_DIR$\..\..\src\3rdPart\LwIP\netif\etharp.c</name>
-                </file>
-            </group>
-        </group>
     </group>
     <group>
         <name>app</name>
@@ -2287,21 +2227,6 @@
         <name>chip</name>
         <group>
             <name>periphdriver</name>
-            <group>
-                <name>rfid</name>
-                <file>
-                    <name>$PROJ_DIR$\..\..\src\Chip\PeriphDriver\src\RFID\FM17xx.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\src\Chip\PeriphDriver\src\RFID\MFRC522.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\src\Chip\PeriphDriver\src\RFID\RFIDCfg.c</name>
-                </file>
-            </group>
-            <file>
-                <name>$PROJ_DIR$\..\..\src\Chip\PeriphDriver\src\ETH_EMAC.c</name>
-            </file>
             <file>
                 <name>$PROJ_DIR$\..\..\src\Chip\PeriphDriver\src\Flash.c</name>
             </file>
@@ -2313,6 +2238,9 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\..\..\src\Chip\PeriphDriver\src\SRAM.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\src\Chip\PeriphDriver\src\TFT.c</name>
             </file>
         </group>
         <group>
@@ -2331,9 +2259,6 @@
             </group>
             <group>
                 <name>comm</name>
-                <file>
-                    <name>$PROJ_DIR$\..\..\src\Chip\STM32F40x\Comm\src\CAN.c</name>
-                </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\src\Chip\STM32F40x\Comm\src\GPIO.c</name>
                 </file>
@@ -2379,18 +2304,33 @@
     <group>
         <name>comm</name>
         <group>
-            <name>msg</name>
+            <name>fat</name>
             <file>
-                <name>$PROJ_DIR$\..\..\src\Comm\Core\src\msg\MsgMnt.c</name>
+                <name>$PROJ_DIR$\..\..\src\Comm\Core\src\fat\fatmnt.c</name>
             </file>
         </group>
         <group>
-            <name>net</name>
+            <name>gui</name>
+            <group>
+                <name>pageDlg</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\Comm\Core\src\gui\pageDlg\DemoWinDLG.c</name>
+                </file>
+            </group>
+            <group>
+                <name>pageMnt</name>
+            </group>
             <file>
-                <name>$PROJ_DIR$\..\..\src\Comm\Core\src\net\netio.c</name>
+                <name>$PROJ_DIR$\..\..\src\Comm\Core\src\gui\guiMntTask.c</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\..\src\Comm\Core\src\net\netmnt.c</name>
+                <name>$PROJ_DIR$\..\..\src\Comm\Core\src\gui\guiSkinMnt.c</name>
+            </file>
+        </group>
+        <group>
+            <name>msg</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\src\Comm\Core\src\msg\MsgMnt.c</name>
             </file>
         </group>
         <group>
@@ -2422,9 +2362,6 @@
                     <name>$PROJ_DIR$\..\..\src\utlis\src\debug\trace.c</name>
                 </file>
             </group>
-            <file>
-                <name>$PROJ_DIR$\..\..\src\utlis\src\FSMBuffer.c</name>
-            </file>
             <file>
                 <name>$PROJ_DIR$\..\..\src\utlis\src\libs.c</name>
             </file>

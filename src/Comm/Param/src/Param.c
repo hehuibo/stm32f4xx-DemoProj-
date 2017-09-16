@@ -22,7 +22,7 @@
 
 static uint32_t DevParamAddr;	
 
-#pragma location = "AHB_RAM_MEMORY"
+//#pragma location = "AHB_RAM_MEMORY"
 sTDevParamTYPE  gs_DevParam;
 
 struct _tag_ParamAddrLimit{

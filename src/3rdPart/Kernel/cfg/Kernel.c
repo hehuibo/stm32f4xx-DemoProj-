@@ -14,7 +14,6 @@ const sThreadAttr_t ThreadAttrAry[eThreadTYPE_MAX] =
 {
   /*--mStackBase---------mStackSize--------------mPrio---------------mName----*/
   {   NULL,        TASK_STACK_INIT,          TASK_PRIO_INIT,	    "Init"  },		/*	InitTask     	*/
-  {   NULL,        TASK_STACK_ETH_INPUT,	 TASK_PRIO_ETH_INPUT,	"Eth"   },		/*	EthInPutTask	*/
   {   NULL,        TASK_STACK_MSGMNT,	     TASK_PRIO_MSGMNT,	    "Msg"   },		/*	MsgMnt          */
   {   NULL,        TASK_STACK_GUI,	         TASK_PRIO_GUI,	        "GUI"   },		/*	GuiMnt          */
 };

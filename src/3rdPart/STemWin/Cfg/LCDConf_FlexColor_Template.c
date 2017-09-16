@@ -127,6 +127,13 @@ static void LcdWriteData(U16 Data) {
   TFT_RAM = Data;
 }
 
+static void LcdWriteRegMultiple(U16 * pData, int NumItems) {
+  while (NumItems--) {
+    // ... TBD by user
+    LcdWriteReg(*pData ++);
+  }
+}
+
 /********************************************************************
 *
 *       LcdWriteDataMultiple
@@ -167,6 +174,14 @@ static void LcdReadDataMultiple(U16 * pData, int NumItems) {
   }
 }
 
+static void LcdReadRegMultiple(U16 * pData, int NumItems) {
+  while (NumItems--) {
+    // ... TBD by user
+    *pData++ = LcdReadReg();
+    //TFT_CheckBusy();
+  }
+}
+
 /*********************************************************************
 *
 *       Public functions
@@ -184,7 +199,7 @@ static void LcdReadDataMultiple(U16 * pData, int NumItems) {
 */
 void LCD_X_Config(void) {
   GUI_DEVICE * pDevice;
- // CONFIG_FLEXCOLOR Config = {0};
+  CONFIG_FLEXCOLOR Config = {0};
   GUI_PORT_API PortAPI = {0};
   //
   // Set display driver and color conversion
@@ -203,16 +218,22 @@ void LCD_X_Config(void) {
   //
   // Set controller and operation mode
   //
-  PortAPI.pfWrite16_A1  = LcdWriteReg;
   PortAPI.pfWrite16_A0  = LcdWriteData;
+  PortAPI.pfWrite16_A1  = LcdWriteReg;
+  
   PortAPI.pfWriteM16_A0 = LcdWriteDataMultiple;
+  PortAPI.pfWriteM16_A1  = LcdWriteRegMultiple;
   
   PortAPI.pfRead16_A1 = LcdReadReg;
   PortAPI.pfRead16_A0 = LcdReadData;
-  PortAPI.pfReadM16_A0  = LcdReadDataMultiple;    
+  PortAPI.pfReadM16_A0  = LcdReadDataMultiple; 
+  PortAPI.pfReadM16_A1  = LcdReadRegMultiple;
 
   GUIDRV_FlexColor_SetFunc(pDevice, &PortAPI, GUIDRV_FLEXCOLOR_F66721, GUIDRV_FLEXCOLOR_M16C0B16);
-}
+  //GUIDRV_FlexColor_SetFunc(pDevice, &PortAPI, GUIDRV_FLEXCOLOR_F66721, GUIDRV_FLEXCOLOR_M16C0B16);
+
+  Config.Orientation = 0;
+  GUIDRV_FlexColor_Config(pDevice, &Config);}
 
 /*********************************************************************
 *

@@ -2,9 +2,9 @@
 /*-Editor annotation file-*/
 /* IcfEditorFile="$TOOLKIT_DIR$\config\linker\ST\IcfEditor\stm32f40x_fsmc.xml" */
 /*-Specials-*/
-define symbol __ICFEDIT_intvec_start__ = 0x08010000;
+define symbol __ICFEDIT_intvec_start__ = 0x08000000;
 /*-Memory Regions-*/
-define symbol __ICFEDIT_region_FLASH_start__  = 0x08010000;
+define symbol __ICFEDIT_region_FLASH_start__  = 0x08000000;
 define symbol __ICFEDIT_region_FLASH_end__    = 0x080FFFFF;
 define symbol __ICFEDIT_region_FSMC11_start__ = 0x0;
 define symbol __ICFEDIT_region_FSMC11_end__   = 0x0;

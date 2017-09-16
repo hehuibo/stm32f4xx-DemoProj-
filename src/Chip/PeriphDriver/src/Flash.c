@@ -9,7 +9,7 @@
  */
 #include "Flash.h"
 
-#pragma location = "AHB_RAM_MEMORY"
+//#pragma location = "AHB_RAM_MEMORY"
 static struct _tag_DataFlash FlashChip[FLASH_CS_NUM];
 
 extern const pfFlashTxRxFuncTYPE pfFlashTxRxAryTbl;

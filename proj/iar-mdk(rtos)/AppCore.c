@@ -2,6 +2,8 @@
  ============================================================================
  Name        : AppCore.c
  Author      : 
+
+
  Version     :
  Copyright   : 
  Description : 
@@ -14,33 +16,28 @@ void InitChipInternal(void){
   
   vConfigureRTC();
   
-  SPI1_Configure();
-  
   SPI2_Configure();
   
   vFSMC_SRAM_Init();
-  
-  CAN_Configure();
-  
-  
 }
 
 /***初始化外围设备***/
-extern void setupNetEnv(void);
-extern void startMsgMntTask(void);
-void InitBoardPeripheral(void){
 
+void InitBoardPeripheral(void)
+{
+  extern void startGuiMntTask(void);
+  extern void startMsgMntTask(void);
+  
   Flash_Init();
+  
+  TFT_Init();
   
   InitParam();
   
-  RFID_Init();
-  
-  vETH_EmacInit();
-  
-  setupNetEnv();
+  startGuiMntTask();
   
   startMsgMntTask();
+ 
 }
 
 static void appStart(void){
