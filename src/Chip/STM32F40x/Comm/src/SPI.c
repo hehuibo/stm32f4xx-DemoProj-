@@ -8,15 +8,18 @@
  ============================================================================
  */
 #include "SPI.h"
+#include "TypesCfg.h"
 
 /**SPI1**/
 #if defined (FreeRTOS_Kernel)
 static xSemaphoreHandle gs_xSpi1Mutex, gs_xSpi2Mutex;
 #endif
 
+
+#if defined (SPI1_DMA_TXRX)
 /*
   DMA2 
-  Stream2 -- Channel 3  --->SPI1->Rx
+  Stream2 --  Channel 3  --->SPI1->Rx
   Stream3 --  Chanel 3  --->SPI1->Tx
 */
 void SPI1_DMAConfigure(void)
@@ -29,9 +32,9 @@ void SPI1_DMAConfigure(void)
   DMA_DeInit(DMA2_Stream3);
   DMA_InitStructure.DMA_Channel = DMA_Channel_3;
   DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
-  DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+  DMA_InitStructure.DMA_Priority = DMA_Priority_Medium;
   DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
-  DMA_InitStructure.DMA_BufferSize = 0;
+  DMA_InitStructure.DMA_BufferSize = 128;
   DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)(&SPI1->DR);/*Peripheral*/
   DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
   DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
@@ -43,67 +46,125 @@ void SPI1_DMAConfigure(void)
   DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
   DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;
   DMA_Init(DMA2_Stream3, &DMA_InitStructure);
-  DMA_Cmd(DMA2_Stream3, ENABLE);
+  
   //Rx
   DMA_DeInit(DMA2_Stream2);
   DMA_InitStructure.DMA_Channel = DMA_Channel_3;
   DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
   DMA_Init(DMA2_Stream2, &DMA_InitStructure);
-  DMA_Cmd(DMA2_Stream2, ENABLE);
+
+  SPI_I2S_DMACmd(SPI1, SPI_DMAReq_Tx, ENABLE);
+  SPI_I2S_DMACmd(SPI1, SPI_DMAReq_Rx, ENABLE);
 }
 
 static uint8_t DummyByte = 0xFF;
 
-void SPI_DMATxData(void *buffer, int len)
+void SPI1_DMATxData(void *TxBfr, void *RxBfr, int len)
 {
-  SPI_I2S_DMACmd(SPI1, SPI_DMAReq_Tx, ENABLE);
-  SPI_I2S_DMACmd(SPI1, SPI_DMAReq_Rx, ENABLE);
-   
+
+  /*关闭DMA*/
+  DMA_Cmd(DMA2_Stream2, DISABLE);
+  DMA_Cmd(DMA2_Stream3, DISABLE);
+  
   /*接收通道*/
-  DMA2_Stream2->M0AR = (uint32_t)&DummyByte;
+  if(RxBfr == NULL){
+    DMA2_Stream2->M0AR = (uint32_t)&DummyByte;
+  }else{
+    DMA2_Stream2->M0AR = (uint32_t)RxBfr;
+  }
+  
   DMA_SetCurrDataCounter(DMA2_Stream2, len);
+  DMA2_Stream2->CR &= (1<<10); //地址不自增
   
   /*发送通道*/
-  DMA2_Stream3->M0AR = (uint32_t)buffer;
+  DMA2_Stream3->M0AR = (uint32_t)TxBfr;
   DMA_SetCurrDataCounter(DMA2_Stream3, len);
-  SPI_I2S_DMACmd(SPI1, SPI_DMAReq_Tx, ENABLE);
-  SPI_I2S_DMACmd(SPI1, SPI_DMAReq_Rx, ENABLE);
+  
+  SPI1->DR;//先清空数据
+  while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET);//等待发送区为空
+  
+  DMA_Cmd(DMA2_Stream2, ENABLE);
+  DMA_Cmd(DMA2_Stream3, ENABLE);
   while(DMA_GetFlagStatus(DMA2_Stream3, DMA_FLAG_TCIF3) == RESET);
+  while(DMA_GetFlagStatus(DMA2_Stream2, DMA_FLAG_TCIF2) == RESET);
+  
+  DMA_Cmd(DMA2_Stream2, DISABLE);
+  DMA_Cmd(DMA2_Stream3, DISABLE);
   
   DMA_ClearFlag(DMA2_Stream2, DMA_FLAG_TCIF2);
   DMA_ClearFlag(DMA2_Stream3, DMA_FLAG_TCIF3);
-  SPI_I2S_DMACmd(SPI1, SPI_DMAReq_Tx, DISABLE);
-  SPI_I2S_DMACmd(SPI1, SPI_DMAReq_Rx, DISABLE);
 }
 
-SPI_InitTypeDef  SPI_InitStructure;
-void SPI_DMARxData(void *buffer, int len)
+void SPI1_DMARxData(void *TxBfr, void *RxBfr, int len)
 {
-
-  SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_RxOnly;
-  SPI_Init(SPI1, &SPI_InitStructure);  
+  DMA_Cmd(DMA2_Stream2, DISABLE);
+  DMA_Cmd(DMA2_Stream3, DISABLE);
+  
   /*发送通道*/
-  DMA2_Stream3->M0AR = (uint32_t)&DummyByte;
+  if(TxBfr == NULL){
+    DMA2_Stream3->M0AR = (uint32_t)&DummyByte;
+  }else{
+    DMA2_Stream3->M0AR = (uint32_t)&TxBfr;
+  }
+  
   DMA_SetCurrDataCounter(DMA2_Stream3, len);
+  DMA2_Stream3->CR &= (1<<10); //地址不自增
   
   /*接收通道*/ 
-  DMA2_Stream2->M0AR = (uint32_t)buffer;
+  DMA2_Stream2->M0AR = (uint32_t)RxBfr;
   DMA_SetCurrDataCounter(DMA2_Stream2, len);
-  //SPI_I2S_DMACmd(SPI1, SPI_DMAReq_Tx, ENABLE);
-  SPI_I2S_DMACmd(SPI1, SPI_DMAReq_Rx, ENABLE);
+  
+  SPI1->DR;//先清空数据
+  while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET);//等待发送区为空
+  
+  DMA_Cmd(DMA2_Stream2, ENABLE);
+  DMA_Cmd(DMA2_Stream3, ENABLE);
+  while(DMA_GetFlagStatus(DMA2_Stream3, DMA_FLAG_TCIF3) == RESET);
   while(DMA_GetFlagStatus(DMA2_Stream2, DMA_FLAG_TCIF2) == RESET);
-  DMA_ClearFlag(DMA2_Stream3, DMA_FLAG_TCIF3);
+  
+  DMA_Cmd(DMA2_Stream2, DISABLE);
+  DMA_Cmd(DMA2_Stream3, DISABLE);
+  
   DMA_ClearFlag(DMA2_Stream2, DMA_FLAG_TCIF2);
-  //SPI_I2S_DMACmd(SPI1, SPI_DMAReq_Tx, DISABLE);
-  SPI_I2S_DMACmd(SPI1, SPI_DMAReq_Rx, DISABLE);
-  SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
-  SPI_Init(SPI1, &SPI_InitStructure); 
+  DMA_ClearFlag(DMA2_Stream3, DMA_FLAG_TCIF3);
 }
+
+void SPI1_DMATxRxData(void *TxBfr, void *RxBfr, int len)
+{
+  DMA_Cmd(DMA2_Stream2, DISABLE);
+  DMA_Cmd(DMA2_Stream3, DISABLE);
+  
+  /*发送通道*/
+  DMA2_Stream3->M0AR = (uint32_t)TxBfr;
+  DMA_SetCurrDataCounter(DMA2_Stream3, len);
+  DMA2_Stream3->CR |= (1<<10); //地址自增
+  
+  /*接收通道*/ 
+  DMA2_Stream2->M0AR = (uint32_t)RxBfr;
+  DMA_SetCurrDataCounter(DMA2_Stream2, len);
+  DMA2_Stream2->CR |= (1<<10); //地址自增
+  
+  SPI1->DR;//先清空数据
+  while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET);//等待发送区为空
+  
+  DMA_Cmd(DMA2_Stream2, ENABLE);
+  DMA_Cmd(DMA2_Stream3, ENABLE);
+  while(DMA_GetFlagStatus(DMA2_Stream3, DMA_FLAG_TCIF3) == RESET);
+  while(DMA_GetFlagStatus(DMA2_Stream2, DMA_FLAG_TCIF2) == RESET);
+  
+  DMA_Cmd(DMA2_Stream2, DISABLE);
+  DMA_Cmd(DMA2_Stream3, DISABLE);
+  
+  DMA_ClearFlag(DMA2_Stream2, DMA_FLAG_TCIF2);
+  DMA_ClearFlag(DMA2_Stream3, DMA_FLAG_TCIF3);
+}
+
+#endif
 
 void SPI1_Configure(void)
 {
   GPIO_InitTypeDef  GPIO_InitStructure;
-
+  SPI_InitTypeDef  SPI_InitStructure;
 #if defined (STM32F40_41xxx)
   SPI_DeInit(SPI1);
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1 , ENABLE);
@@ -157,6 +218,10 @@ void SPI1_Configure(void)
 	
 #if defined (FreeRTOS_Kernel)
   gs_xSpi1Mutex = xSemaphoreCreateMutex();
+#endif
+
+#if defined(SPI1_DMA_TXRX)  
+  SPI1_DMAConfigure();
 #endif
     
 }

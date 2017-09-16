@@ -56,10 +56,23 @@ const xTFlashCSCtrlValTypeDef gxFlashCSCtrlValAry[FLASH_CS_NUM] = {
   {FLASH_CS0_PORT, FLASH_CS0_PIN},  /*eFLASH_ID_CS0*/
 };
 
-//Flash SPI
+#if defined (FLASH_DMA_TXRX)
+const pfnFlashDMATxRxFUNCTIONAry pfFlashDMATxRxAry = {
+  SPI1_DMATxRxData,
+};
+
+const pfnFlashDMATxRxFUNCTIONAry pfFlashDMARxAry = {
+  SPI1_DMARxData,
+};
+
+const pfnFlashDMATxRxFUNCTIONAry pfFlashDMATxAry = {
+  SPI1_DMATxData,
+};
+#else
 const pfFlashTxRxFUNCTION pfFlashTxRxAry = {
   SPI1_TxRxByte,
 };
+#endif
 
 /*SPI Lock*/
 #if defined (FreeRTOS_Kernel) 

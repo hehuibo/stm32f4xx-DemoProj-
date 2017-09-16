@@ -23,15 +23,22 @@
 //#define SPI1_PIN_REAMP
 #endif
 
+#define SPI1_DMA_TXRX
+#define SPI2_DMA_TXRX
+
 void SPI1_Configure(void);
 
 void SPI1_SetSpeed(uint8_t SPI_BaudRatePrescaler);
 
 uint8_t SPI1_TxRxByte(uint8_t Dat);
 
-void SPI_DMATxData(void *buffer, int len);
+#if defined(SPI1_DMA_TXRX)
+void SPI1_DMATxData(void *TxBfr, void *RxBfr, int len);
 
-void SPI_DMARxData(void *buffer, int len);
+void SPI1_DMARxData(void *TxBfr, void *RxBfr, int len);
+
+void SPI1_DMATxRxData(void *TxBfr, void *RxBfr, int len);
+#endif
 
 void SPI2_Configure(void);
 

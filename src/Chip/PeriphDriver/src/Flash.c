@@ -9,10 +9,22 @@
  */
 #include "Flash.h"
 
-#pragma location = "AHB_RAM_MEMORY"
+//#pragma location = "AHB_RAM_MEMORY"
 static struct _tag_DataFlash FlashChip[FLASH_CS_NUM];
 
+#if defined (FLASH_DMA_TXRX)
+#define FLASH_TXRX_LEN  10
+uint8_t FLASH_RX_BUFFER[FLASH_TXRX_LEN];
+uint8_t FLASH_TX_BUFFER[FLASH_TXRX_LEN];
+extern const pfnFlashDMATxRxFUNCTIONAry pfFlashDMATxAry;
+extern const pfnFlashDMATxRxFUNCTIONAry pfFlashDMARxAry;
+extern const pfnFlashDMATxRxFUNCTIONAry pfFlashDMATxRxAry;
+
+#else
 extern const pfFlashTxRxFUNCTION pfFlashTxRxAry;
+#endif
+
+
 extern const xTFlashCSCtrlValTypeDef gxFlashCSCtrlValAry[FLASH_CS_NUM];
 
 #if defined (FreeRTOS_Kernel) 
@@ -38,8 +50,15 @@ static unsigned char Flash_RD_SR(enum eFlashCSTYPE FlashCSNum)
   unsigned char ret;
 
   GPIO_ResetBits(gxFlashCSCtrlValAry[FlashCSNum].mGPIOx, gxFlashCSCtrlValAry[FlashCSNum].mBasePin);
+#if defined (FLASH_DMA_TXRX)
+  unsigned char mCnt = 0;
+  FLASH_TX_BUFFER[mCnt++] = eFlashCmd_ReadStatus;
+  FLASH_TX_BUFFER[mCnt++] = eFlash_DummyByte;
+  pfFlashDMATxAry[FlashCSNum](FLASH_TX_BUFFER, &ret, mCnt);
+#else
   pfFlashTxRxAry[FlashCSNum](eFlashCmd_ReadStatus);
   ret = pfFlashTxRxAry[FlashCSNum](eFlash_DummyByte);
+#endif
   GPIO_SetBits(gxFlashCSCtrlValAry[FlashCSNum].mGPIOx, gxFlashCSCtrlValAry[FlashCSNum].mBasePin);
 
   return ret;
@@ -48,7 +67,13 @@ static unsigned char Flash_RD_SR(enum eFlashCSTYPE FlashCSNum)
 static void Flash_WR_Enable(enum eFlashCSTYPE FlashCSNum)
 {
   GPIO_ResetBits(gxFlashCSCtrlValAry[FlashCSNum].mGPIOx, gxFlashCSCtrlValAry[FlashCSNum].mBasePin);
+#if defined(FLASH_DMA_TXRX) 
+  unsigned char mCnt = 0;
+  FLASH_TX_BUFFER[mCnt++] = eFlashCmd_WriteEnable;
+  pfFlashDMATxAry[FlashCSNum](FLASH_TX_BUFFER, NULL, mCnt);
+#else
   pfFlashTxRxAry[FlashCSNum](eFlashCmd_WriteEnable);
+#endif
   GPIO_SetBits(gxFlashCSCtrlValAry[FlashCSNum].mGPIOx, gxFlashCSCtrlValAry[FlashCSNum].mBasePin);
 
 }
@@ -98,11 +123,15 @@ signed char FlashCommand(unsigned char cmd, int addr, const void *indat, void *o
     case eFlashCmd_Write :
       do{
         Flash_WR_Enable(FlashCSNum);
-
+#if defined(FLASH_DMA_TXRX) 
+  
+#else
         /*delay*/
        for(int i=0; i<100; i++){
           __ASM("nop");
        }
+        
+#endif
         unsigned char stat;
         do{		
           stat = Flash_RD_SR(FlashCSNum);
@@ -115,23 +144,44 @@ signed char FlashCommand(unsigned char cmd, int addr, const void *indat, void *o
   
   GPIO_ResetBits(gxFlashCSCtrlValAry[FlashCSNum].mGPIOx, gxFlashCSCtrlValAry[FlashCSNum].mBasePin);
   //Flash_SetSpeed();
-  pfFlashTxRxAry[FlashCSNum](cmd);
   
+#if defined(FLASH_DMA_TXRX) 
+  /*发送命令*/
+  uint8_t mCnt = 0;
+  FLASH_TX_BUFFER[mCnt++] = cmd;
+  if(addr != -1){
+    FLASH_TX_BUFFER[mCnt++] = (uint8_t)((addr>>16)&0xFF);
+    FLASH_TX_BUFFER[mCnt++] = (uint8_t)((addr>>8)&0xFF);
+    FLASH_TX_BUFFER[mCnt++] = (uint8_t)(addr&0xFF);
+  }else{
+    for(int i= mCnt; i< len; i++){
+      FLASH_TX_BUFFER[i] = eFlash_DummyByte;
+    }
+    mCnt += len;
+  }
+  pfFlashDMATxRxAry[FlashCSNum](FLASH_TX_BUFFER, FLASH_RX_BUFFER, mCnt);
+  if(addr != -1){
+    if(inbuf){/*写数据*/
+      pfFlashDMATxAry[FlashCSNum](inbuf,NULL,len);
+    }
+    if(outbuf){/*读数据*/
+      pfFlashDMARxAry[FlashCSNum](NULL, outbuf,len);
+    }
+  }else{
+    if(len){
+      memcpy(outbuf, &FLASH_RX_BUFFER[mCnt - len], len);
+    }
+  }
+  
+#else
+  pfFlashTxRxAry[FlashCSNum](cmd);
   /*发送命令*/
   if(addr != -1){
     pfFlashTxRxAry[FlashCSNum]((addr>>16)&0xFF);
     pfFlashTxRxAry[FlashCSNum]((addr>>8)&0xFF);
     pfFlashTxRxAry[FlashCSNum](addr&0xFF);
   }
-#if 0  
-  if(inbuf){/*写数据*/
-    SPI_DMATxData(inbuf, len);
-  }
   
-  if(outbuf){/*读数据*/
-    SPI_DMARxData(inbuf, len);
-  }
-#else
   /*读写数据*/
   while(len-- > 0){
     unsigned char tmp;
@@ -151,6 +201,12 @@ signed char FlashCommand(unsigned char cmd, int addr, const void *indat, void *o
  
   switch(cmd){
     case eFlashCmd_Write :{
+#if defined(FLASH_DMA_TXRX) 
+      unsigned char stat;
+      do{		
+        stat = Flash_RD_SR(FlashCSNum);
+      }while((stat & 1));
+#else
       for(int i=0; i<100; i++){
         __ASM("nop");
       }
@@ -162,7 +218,9 @@ signed char FlashCommand(unsigned char cmd, int addr, const void *indat, void *o
 
       for(int i=0; i<100; i++){
         __ASM("nop");
-      }
+      }     
+#endif
+      
     }
     break;
 

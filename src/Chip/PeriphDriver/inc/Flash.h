@@ -59,13 +59,22 @@ extern void SysTickDlyMs(uint16_t ms);
 #define FlashDelayms(x)  //SysTickDlyMs(x)
 #endif
 
+#if defined(SPI1_DMA_TXRX) || defined(SPI2_DMA_TXRX)
+#define FLASH_DMA_TXRX
+#endif
+
+
 typedef struct _tag_FlashCSCtrlValTYPE
 {
   GPIO_TypeDef* mGPIOx;
   unsigned int mBasePin;
 }xTFlashCSCtrlValTypeDef;
 
+#if defined (FLASH_DMA_TXRX)
+typedef void (*pfnFlashDMATxRxFUNCTIONAry[])(void*, void* , int);
+#else
 typedef uint8_t(*pfFlashTxRxFUNCTION[])(uint8_t);
+#endif
 typedef void (*pfFlashSpiFUNCTION[])(void);
 
 /*********Config**********/
@@ -88,10 +97,6 @@ enum eFlashCSTYPE{
 #define FLASH_CS0_GPIOCLK	RCC_AHB1Periph_GPIOE
 
 #define FLASH_CSPORT_CLK    (FLASH_CS0_GPIOCLK)
-
-#define Flash_TxRxByte	SPI1_TxRxByte
-#define Flash_SetSpeed	SPI1_SetSpeed
-
 
 /**
  * struct data_flash_dev - DATA Flash Device ID Structure
