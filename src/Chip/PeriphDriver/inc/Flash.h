@@ -49,7 +49,7 @@ enum _tag_eFlashCmd
   eFlashCmd_DeviceID            = 0x9F,
   
   /**/
-  eFlash_DummyByte              = 0x00,
+  eFlash_DummyByte              = 0xFF,
 };
 
 #if defined(FreeRTOS_Kernel)
@@ -96,7 +96,7 @@ enum eFlashCSTYPE{
 #define FLASH_CS0_PORT		GPIOE //GPIOA//
 #define FLASH_CS0_GPIOCLK	RCC_AHB1Periph_GPIOE
 
-#define FLASH_CSPORT_CLK    (FLASH_CS0_GPIOCLK)
+#define FLASH_CSPORT_CLK    FLASH_CS0_GPIOCLK
 
 /**
  * struct data_flash_dev - DATA Flash Device ID Structure

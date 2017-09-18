@@ -44,6 +44,8 @@ static void AppTargetInit(void){
 }
 
 void AppTaskInit(void){
+  uint8_t wbuffer[32];
+  
   AppTargetInit();
   
   /***初始化芯片内部资源***/
@@ -51,6 +53,22 @@ void AppTaskInit(void){
   
   /***初始化外围设备***/
   InitBoardPeripheral(); 
+  
+  for(int i=0; i< 32;i ++){
+    wbuffer[i] = i;
+  }
+#if 0
+  int wlen = FlashWrite(0x1000, wbuffer, 32, eFLASH_ID_CS0);
+
+  dbgTRACE("\nFlashReadEnd: %d\r\n", wlen);
+   dbgTRACE("\nFlashReadEnd: %d\r\n", wlen);
+    dbgTRACE("\nFlashReadEnd: %d\r\n", wlen);
+     dbgTRACE("\nFlashReadEnd: %d\r\n", wlen);
+  dbgTRACE("\nFlashReadEnd\r\n");
+  dbgTRACE("\nFlashReadEnd\r\n");
+  dbgTRACE("\nFlashReadEnd\r\n");
+  dbgTRACE("\nFlashReadEnd\r\n");
+#endif  
   
 }
 
@@ -100,7 +118,15 @@ void vDelay1STask(void){
   #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
   dbgTRACE("appStart\n");
   #endif 
-  
+  #if 1
+    uint8_t buffer[32];
+    int rlen  =  FlashRead(0x1000, buffer, 32, eFLASH_ID_CS0);
+    dbgTRACE("\nFlashReadEnd: rlen %d\r\n", rlen);
+    #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
+    for(int i= 0 ;i< rlen;i++)
+    dbgTRACE("FlashRead:%x\n", buffer[i]);
+    #endif 
+  #endif
   GPIO_ToggleBits(GPIOE,GPIO_Pin_2);
 }
 

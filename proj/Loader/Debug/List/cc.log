@@ -4,8 +4,8 @@ Creating copy init batch C1 (Table) for P1 -> P4, auto
 Selecting packing algorithm for 'auto' batches
   Estimating size for copy init batch C1 (P1 -> P4):
       copy: 76 bytes
-      packbits: 37 bytes
-      lz77: 36 bytes
+      packbits: 39 bytes
+      lz77: 38 bytes
     Selecting lz77
   Using "copy" instead of "lz77" everywhere reduces total estimated
-    overhead from 536 to 120
+    overhead from 538 to 120

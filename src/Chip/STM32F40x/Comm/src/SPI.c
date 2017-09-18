@@ -73,7 +73,7 @@ void SPI1_DMATxData(void *TxBfr, void *RxBfr, int len)
   }
   
   DMA_SetCurrDataCounter(DMA2_Stream2, len);
-  DMA2_Stream2->CR &= (1<<10); //地址不自增
+  DMA2_Stream2->CR &= ~(1<<10); //地址不自增
   
   /*发送通道*/
   DMA2_Stream3->M0AR = (uint32_t)TxBfr;
@@ -94,25 +94,25 @@ void SPI1_DMATxData(void *TxBfr, void *RxBfr, int len)
   DMA_ClearFlag(DMA2_Stream3, DMA_FLAG_TCIF3);
 }
 
+//OK
 void SPI1_DMARxData(void *TxBfr, void *RxBfr, int len)
 {
   DMA_Cmd(DMA2_Stream2, DISABLE);
   DMA_Cmd(DMA2_Stream3, DISABLE);
-  
   /*发送通道*/
-  if(TxBfr == NULL){
+  if(RxBfr == NULL){
     DMA2_Stream3->M0AR = (uint32_t)&spi1DummyByte;
   }else{
-    DMA2_Stream3->M0AR = (uint32_t)&TxBfr;
+    DMA2_Stream3->M0AR = (uint32_t)TxBfr;
   }
   
   DMA_SetCurrDataCounter(DMA2_Stream3, len);
-  DMA2_Stream3->CR &= (1<<10); //地址不自增
+  DMA2_Stream3->CR &= ~(1<<10); //地址不自增
   
   /*接收通道*/ 
   DMA2_Stream2->M0AR = (uint32_t)RxBfr;
   DMA_SetCurrDataCounter(DMA2_Stream2, len);
-  
+ 
   SPI1->DR;//先清空数据
   while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET);//等待发送区为空
   
@@ -128,6 +128,7 @@ void SPI1_DMARxData(void *TxBfr, void *RxBfr, int len)
   DMA_ClearFlag(DMA2_Stream3, DMA_FLAG_TCIF3);
 }
 
+//OK
 void SPI1_DMATxRxData(void *TxBfr, void *RxBfr, int len)
 {
   DMA_Cmd(DMA2_Stream2, DISABLE);
@@ -209,7 +210,7 @@ void SPI1_Configure(void)
   SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;		
   SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;	
   SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;	
-  SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_16;		
+  SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_256;		
   SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;	
   SPI_InitStructure.SPI_CRCPolynomial = 7;	
   SPI_Init(SPI1, &SPI_InitStructure);  
@@ -326,7 +327,7 @@ void SPI2_DMATxData(void *TxBfr, void *RxBfr, int len)
   }
   
   DMA_SetCurrDataCounter(DMA1_Stream3, len);
-  DMA1_Stream3->CR &= (1<<10); //地址不自增
+  DMA1_Stream3->CR &= ~(1<<10); //地址不自增
   
   /*发送通道*/
   DMA1_Stream4->M0AR = (uint32_t)TxBfr;
@@ -359,7 +360,7 @@ void SPI2_DMARxData(void *TxBfr, void *RxBfr, int len)
     DMA1_Stream4->M0AR = (uint32_t)&TxBfr;
   }
   DMA_SetCurrDataCounter(DMA1_Stream4, len);
-  DMA1_Stream4->CR &= (1<<10); //地址不自增
+  DMA1_Stream4->CR &= ~(1<<10); //地址不自增
   
   /*接收通道*/ 
   DMA1_Stream3->M0AR = (uint32_t)RxBfr;
@@ -449,8 +450,8 @@ void SPI2_Configure(void)
   gs_xSpi2Mutex = xSemaphoreCreateMutex();
 #endif  
         
-#if defined(SPI1_DMA_TXRX)  
-  SPI1_DMAConfigure();
+#if defined(SPI2_DMA_TXRX)  
+  SPI2_DMAConfigure();
 #endif
 }
 
