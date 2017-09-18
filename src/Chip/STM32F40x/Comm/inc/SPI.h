@@ -46,6 +46,14 @@ void SPI2_SetSpeed(uint8_t SPI_BaudRatePrescaler);
 
 uint8_t SPI2_TxRxByte(uint8_t Dat);
 
+#if defined(SPI2_DMA_TXRX)
+void SPI2_DMATxData(void *TxBfr, void *RxBfr, int len);
+
+void SPI2_DMARxData(void *TxBfr, void *RxBfr, int len);
+
+void SPI2_DMATxRxData(void *TxBfr, void *RxBfr, int len);
+#endif
+
 #if defined (FreeRTOS_Kernel)
 void SPI1_Lock(void);
 void SPI1_Unlock(void);
