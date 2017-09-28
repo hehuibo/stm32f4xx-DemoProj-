@@ -8,22 +8,6 @@
  ============================================================================
  */
 
-/*根据芯片类型设置缓存的大小*/
-#if defined (COTEX_CORE_M3) ||defined (COTEX_CORE_M4)
-#define TRACE_BUFFER_SIZE	(1048)
-#elif defined (COTEX_CORE_M0) || defined (COTEX_CORE_M0PLUS)
-#define TRACE_BUFFER_SIZE	 256
-#else
-#define TRACE_BUFFER_SIZE	 512
-#endif
-   
-/*串口打印配置*/
-#if defined (UART_TRACE)
-#include "stm32f4xx.h"
-#include "USART1.h"
-//#include "UART4.h"
-#define     dbgTRACEUART   USART1 // UART4 //
-#endif
 
 #if defined (JLINK_RTT_TRACE)
 #include "SEGGER_RTT.h"
@@ -34,27 +18,8 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#if defined (FreeRTOS_Kernel)
-#include "Kernel.h"
-xSemaphoreHandle xTraceMutex;
-
-void TraceLock(void)
-{
-  xSemaphoreTake(xTraceMutex, portMAX_DELAY);
-}
-
-void TraceUnLock(void)
-{
-  xSemaphoreGive(xTraceMutex);
-}
-#endif
-
 void TRACE_Init(void)
 {
-#if defined (FreeRTOS_Kernel)
-  xTraceMutex = xSemaphoreCreateMutex();
-#endif
-  
 #if defined (UART_TRACE)
   vUSART1_Configure(115200);
   //vUART4_Configure(115200);

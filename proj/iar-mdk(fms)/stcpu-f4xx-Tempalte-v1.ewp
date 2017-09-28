@@ -49,16 +49,16 @@
                 <option>
                     <name>GRuntimeLibSelect</name>
                     <version>0</version>
-                    <state>1</state>
+                    <state>2</state>
                 </option>
                 <option>
                     <name>GRuntimeLibSelectSlave</name>
                     <version>0</version>
-                    <state>1</state>
+                    <state>2</state>
                 </option>
                 <option>
                     <name>RTDescription</name>
-                    <state>Use the normal configuration of the C/C++ runtime library. No locale interface, C locale, no file descriptor support, no multibytes in printf and scanf, and no hex floats in strtod.</state>
+                    <state>Use the full configuration of the C/C++ runtime library. Full locale interface, C locale, file descriptor support, multibytes in printf and scanf, and hex floats in strtod.</state>
                 </option>
                 <option>
                     <name>OGProductVersion</name>
@@ -66,7 +66,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>8.11.2.13604</state>
+                    <state>8.11.3.13977</state>
                 </option>
                 <option>
                     <name>GeneralEnableMisra</name>
@@ -112,7 +112,7 @@
                 </option>
                 <option>
                     <name>RTConfigPath2</name>
-                    <state>$TOOLKIT_DIR$\INC\c\DLib_Config_Normal.h</state>
+                    <state>$TOOLKIT_DIR$\INC\c\DLib_Config_Full.h</state>
                 </option>
                 <option>
                     <name>GBECoreSlave</name>
@@ -215,6 +215,7 @@
                     <state>STM32F40_41xxx</state>
                     <state>USE_STDPERIPH_DRIVER</state>
                     <state>_NoRTOSKernel</state>
+                    <state>IAR_TRACE</state>
                     <state>JLINK_RTT_TRACE</state>
                     <state>USE_USB_OTG_FS</state>
                     <state>USE_EMBEDDED_PHY</state>
@@ -2244,6 +2245,18 @@
         <name>chip</name>
         <group>
             <name>Periphdriver</name>
+            <group>
+                <name>RFID</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\Chip\PeriphDriver\src\RFID\FM17xx.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\Chip\PeriphDriver\src\RFID\RFIDCfg.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\Chip\PeriphDriver\src\RFID\RFIDDes.c</name>
+                </file>
+            </group>
             <file>
                 <name>$PROJ_DIR$\..\..\src\Chip\PeriphDriver\src\ETH_EMAC.c</name>
             </file>
@@ -2255,6 +2268,9 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\..\..\src\Chip\PeriphDriver\src\IR.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\src\Chip\PeriphDriver\src\LCD19264.c</name>
             </file>
             <file>
                 <name>$PROJ_DIR$\..\..\src\Chip\PeriphDriver\src\SDIO.c</name>

@@ -10,7 +10,7 @@
 #include "main.h"
 
 /***初始化芯片内部资源***/
-void InitChipInternal(void){
+static void InitChipInternal(void){
   
   vConfigureRTC();
   
@@ -26,10 +26,10 @@ void InitChipInternal(void){
 }
 
 /***初始化外围设备***/
-extern void setupNetEnv(void);
-extern void startMsgMntTask(void);
-void InitBoardPeripheral(void){
-
+static void InitBoardPeripheral(void)
+{
+  extern void setupNetEnv(void);
+  extern void startMsgMntTask(void);
   Flash_Init();
   
   InitParam();

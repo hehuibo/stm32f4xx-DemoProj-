@@ -16,6 +16,9 @@
 #include "Param.h"
 #include "ff.h"
 
+#include "RFID\RFID.h"
+#include "LCD19264.h"
+
 #include "usbd_msc_core.h"
 #include "usbd_usr.h"
 #include "usbd_desc.h"

@@ -2485,6 +2485,18 @@
         <name>chip</name>
         <group>
             <name>Periphdriver</name>
+            <group>
+                <name>RFID</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\Chip\PeriphDriver\src\RFID\FM17xx.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\Chip\PeriphDriver\src\RFID\RFIDCfg.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\src\Chip\PeriphDriver\src\RFID\RFIDDes.c</name>
+                </file>
+            </group>
             <file>
                 <name>$PROJ_DIR$\..\..\src\Chip\PeriphDriver\src\ETH_EMAC.c</name>
             </file>
@@ -2496,6 +2508,9 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\..\..\src\Chip\PeriphDriver\src\IR.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\src\Chip\PeriphDriver\src\LCD19264.c</name>
             </file>
             <file>
                 <name>$PROJ_DIR$\..\..\src\Chip\PeriphDriver\src\SDIO.c</name>

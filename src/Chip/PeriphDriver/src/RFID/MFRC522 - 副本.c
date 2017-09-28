@@ -713,7 +713,7 @@ char PcdComCmdPro(uint8_t mode, uint8_t *pInBfr, uint8_t inLen, uint8_t *pOutBfr
 {
   char status;
   unsigned int  unLen = inLen;
- // ClearBitMask(Status2Reg,0x08);	// 清空校验成功标志,清除MFCrypto1On位
+  ClearBitMask(Status2Reg,0x08);	// 清空校验成功标志,清除MFCrypto1On位
   if(mode){
     PcdSwitchPCB();
     pInBfr[0] = gcRfidPcdPCB;		
@@ -732,7 +732,7 @@ char PcdComCmdPro(uint8_t mode, uint8_t *pInBfr, uint8_t inLen, uint8_t *pOutBfr
       dbgTRACE("\r\n");
       #endif
   
-     status = PcdComMF522(PCD_TRANSCEIVE, pInBfr, unLen + 2, pOutBfr, &unLen);// 将收到的卡片类型号保存
+     status = PcdComMF522(PCD_TRANSCEIVE,pInBfr,unLen + 2,pOutBfr,&unLen);// 将收到的卡片类型号保存
       #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
       dbgTRACE("%d \r\n", unLen);
       for(int i=0; i<(unLen); i++){

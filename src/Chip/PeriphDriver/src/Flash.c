@@ -1,35 +1,43 @@
-/*
- ============================================================================
- Name        : Flash.c 
- Author      : 
- Version     :
- Copyright   : 
- Description : 
- ============================================================================
- */
 #include "Flash.h"
 
-//#pragma location = "AHB_RAM_MEMORY"
+/***************************************************/
+enum _tag_eFlashCmd
+{  
+  eFlashCmd_WriteStatus         = 0x01,
+  eFlashCmd_Write               = 0x02,  /*Page Program*/
+  eFlashCmd_Read                = 0x03,
+  eFlashCmd_WriteDisable        = 0x04,
+  eFlashCmd_ReadStatus          = 0x05,
+  eFlashCmd_WriteEnable         = 0x06,
+  
+  eFlashCmd_Erase4K             = 0x20, /*Sector Erase*/
+  eFlashCmd_Erase32K            = 0x52, /* 32k Block Erase*/
+  eFlashCmd_Erase64K            = 0xD8, /*64K Block Erase*/
+  eFlashCmd_EraseAll            = 0xC7, /*Chip Erase*/
+  
+  eFlashCmd_DeviceID            = 0x9F,
+  
+  eFlash_DummyByte              = 0x00,
+};
+/*********************************************/
+#if defined (FLASH_DMA_TXRX)
+#define FLASH_RX_LEN 10
+uint8_t FLASH_RX_BUFFER[FLASH_RX_LEN];
+uint8_t FLASH_TX_BUFFER[FLASH_RX_LEN]; 
+#endif
+
+/*********************************************/
 static struct _tag_DataFlash FlashChip[FLASH_CS_NUM];
 
+/*********************************************/
 #if defined (FLASH_DMA_TXRX)
-#define FLASH_TXRX_LEN  10
-uint8_t FLASH_RX_BUFFER[FLASH_TXRX_LEN];
-uint8_t FLASH_TX_BUFFER[FLASH_TXRX_LEN];
-extern const pfnFlashDMATxRxFUNCTIONAry pfFlashDMATxAry;
-extern const pfnFlashDMATxRxFUNCTIONAry pfFlashDMARxAry;
 extern const pfnFlashDMATxRxFUNCTIONAry pfFlashDMATxRxAry;
+extern const pfnFlashDMATxRxFUNCTIONAry pfFlashDMARxAry;
+extern const pfnFlashDMATxRxFUNCTIONAry pfFlashDMATxAry;
 #else
 extern const pfFlashTxRxFUNCTION pfFlashTxRxAry;
 #endif
-
-
 extern const xTFlashCSCtrlValTypeDef gxFlashCSCtrlValAry[FLASH_CS_NUM];
-
-#if defined (FreeRTOS_Kernel) 
-extern const pfFlashSpiFUNCTION pfFlashSpiLockAry;
-extern const pfFlashSpiFUNCTION pfFlashSpiUnLockAry;
-#endif
 
 extern const struct data_flash_dev data_flash_ids[];
 
@@ -39,15 +47,30 @@ extern const struct data_flash_dev data_flash_ids[];
  */
 volatile bool isErasing;
 
+/*********************************************/
 struct _tag_DataFlash* getCurrFlash(enum eFlashCSTYPE FlashCSNum)
 {
   return &FlashChip[FlashCSNum];
 }
 
+static void Flash_WR_Enable(enum eFlashCSTYPE FlashCSNum)
+{
+  GPIO_ResetBits(gxFlashCSCtrlValAry[FlashCSNum].mGPIOx, gxFlashCSCtrlValAry[FlashCSNum].mBasePin);
+#if defined(FLASH_DMA_TXRX) 
+  unsigned char mCnt = 0;
+  FLASH_TX_BUFFER[mCnt++] = eFlashCmd_WriteEnable;
+  pfFlashDMATxRxAry[FlashCSNum](FLASH_TX_BUFFER, FLASH_RX_BUFFER, mCnt);
+#else
+  pfFlashTxRxAry[FlashCSNum](eFlashCmd_WriteEnable);
+#endif
+  
+  GPIO_SetBits(gxFlashCSCtrlValAry[FlashCSNum].mGPIOx, gxFlashCSCtrlValAry[FlashCSNum].mBasePin);
+
+}
+
 static unsigned char Flash_RD_SR(enum eFlashCSTYPE FlashCSNum)
 {
   unsigned char ret;
-
   GPIO_ResetBits(gxFlashCSCtrlValAry[FlashCSNum].mGPIOx, gxFlashCSCtrlValAry[FlashCSNum].mBasePin);
 #if defined (FLASH_DMA_TXRX)
   unsigned char mCnt = 0;
@@ -63,32 +86,20 @@ static unsigned char Flash_RD_SR(enum eFlashCSTYPE FlashCSNum)
   return ret;
 }
 
-static void Flash_WR_Enable(enum eFlashCSTYPE FlashCSNum)
-{
-  GPIO_ResetBits(gxFlashCSCtrlValAry[FlashCSNum].mGPIOx, gxFlashCSCtrlValAry[FlashCSNum].mBasePin);
-#if defined(FLASH_DMA_TXRX) 
-  unsigned char mCnt = 0;
-  FLASH_TX_BUFFER[mCnt++] = eFlashCmd_WriteEnable;
-  pfFlashDMATxRxAry[FlashCSNum](FLASH_TX_BUFFER, FLASH_RX_BUFFER, mCnt);
-#else
-  pfFlashTxRxAry[FlashCSNum](eFlashCmd_WriteEnable);
-#endif
-  GPIO_SetBits(gxFlashCSCtrlValAry[FlashCSNum].mGPIOx, gxFlashCSCtrlValAry[FlashCSNum].mBasePin);
-
-}
-
 /*
  *FlashCmd  proc
  */
-signed char FlashCommand(unsigned char cmd, int addr, const void *indat, void *outdat, uint32_t len,enum eFlashCSTYPE FlashCSNum)
+signed char FlashCommand(unsigned char cmd, int addr, const void *indat, void *outdat, unsigned int len, enum eFlashCSTYPE FlashCSNum)
 {
   unsigned char *inbuf = (unsigned char*)indat;
   unsigned char *outbuf = (unsigned char*)outdat;
-	
+  unsigned char mCnt = 0;
+  /*发送命令*/
+  
   while(1){
-#if defined (FreeRTOS_Kernel) 
+    #if defined (FreeRTOS_Kernel) 
     pfFlashSpiLockAry[FlashCSNum]();
-#endif    
+    #endif    
     if(!isErasing){
       /*Idle*/
       if(cmd == eFlashCmd_Erase4K  ||
@@ -103,112 +114,77 @@ signed char FlashCommand(unsigned char cmd, int addr, const void *indat, void *o
              cmd == eFlashCmd_ReadStatus){
         break;
       }
-#if defined (FreeRTOS_Kernel) 
+     #if defined (FreeRTOS_Kernel) 
      pfFlashSpiUnLockAry[FlashCSNum]();
      SPI_Wait();
-#endif
+     #endif
 	
-
   }/*end while*/
-	
+  
   switch(cmd){
     case eFlashCmd_Erase32K :
     case eFlashCmd_Erase4K :
     case eFlashCmd_Erase64K :
     case eFlashCmd_EraseAll :
-    case eFlashCmd_Write :
+    case eFlashCmd_Write :{
       do{
         Flash_WR_Enable(FlashCSNum);
         /*delay*/
-       for(int i=0; i<100; i++){
-          __ASM("nop");
-       }
-#if 1
+         for(int i=0; i<100; i++){
+            __ASM("nop");
+         }
         unsigned char stat;
         do{		
           stat = Flash_RD_SR(FlashCSNum);
+          //dbgprint("%x\t %x\r\n",stat, stat & 2);
           #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
           dbgTRACE("%x\t %x\r\n",stat, stat & 2);
           #endif 
         }while((stat & 2)== 0);
-#endif
 
       }while(false);
-      
+     }
       break;
-  }/*switch*/
+  }/*end switch*/
   
   
-  //Flash_SetSpeed();
-  
-#if defined(FLASH_DMA_TXRX) 
   /*发送命令*/
-  uint8_t mCnt = 0;
+  mCnt = 0;
   FLASH_TX_BUFFER[mCnt++] = cmd;
-  if(addr != -1){
+  GPIO_ResetBits(gxFlashCSCtrlValAry[FlashCSNum].mGPIOx, gxFlashCSCtrlValAry[FlashCSNum].mBasePin);
+  if(addr != -1){ //读写数据
     FLASH_TX_BUFFER[mCnt++] = (uint8_t)((addr>>16)&0xFF);
     FLASH_TX_BUFFER[mCnt++] = (uint8_t)((addr>>8)&0xFF);
     FLASH_TX_BUFFER[mCnt++] = (uint8_t)(addr&0xFF);
+    //GPIO_ResetBits(gxFlashCSCtrlValAry[FlashCSNum].mGPIOx, gxFlashCSCtrlValAry[FlashCSNum].mBasePin);
+    pfFlashDMATxRxAry[FlashCSNum](FLASH_TX_BUFFER, FLASH_RX_BUFFER, mCnt);
+    if(inbuf){/*写数据*/
+      pfFlashDMATxAry[FlashCSNum](inbuf,NULL,len);
+    }
+    if(outbuf){/*读数据*/
+      pfFlashDMARxAry[FlashCSNum](NULL, outbuf,len);
+    }
   }else{
     for(int i= mCnt; i< len; i++){
       FLASH_TX_BUFFER[i] = eFlash_DummyByte;
     }
     mCnt += len;
-  }
-  GPIO_ResetBits(gxFlashCSCtrlValAry[FlashCSNum].mGPIOx, gxFlashCSCtrlValAry[FlashCSNum].mBasePin);
-  
-  if(addr != -1){
-    if(inbuf){/*写数据*/
-      pfFlashDMATxRxAry[FlashCSNum](FLASH_TX_BUFFER, FLASH_RX_BUFFER, mCnt);
-      pfFlashDMATxAry[FlashCSNum](inbuf,NULL,len);
-    }
-    if(outbuf){/*读数据*/
-      pfFlashDMATxRxAry[FlashCSNum](FLASH_TX_BUFFER, FLASH_RX_BUFFER, mCnt);
-      pfFlashDMARxAry[FlashCSNum](NULL, outbuf,len);
-    }
-  }else{
+    //GPIO_ResetBits(gxFlashCSCtrlValAry[FlashCSNum].mGPIOx, gxFlashCSCtrlValAry[FlashCSNum].mBasePin);
+    pfFlashDMATxRxAry[FlashCSNum](FLASH_TX_BUFFER, FLASH_RX_BUFFER, mCnt);
     if(len){
-      pfFlashDMATxRxAry[FlashCSNum](FLASH_TX_BUFFER, FLASH_RX_BUFFER, mCnt);
       memcpy(outbuf, &FLASH_RX_BUFFER[mCnt - len], len);
-    }
+    } 
   }
-  
-#else
-  GPIO_ResetBits(gxFlashCSCtrlValAry[FlashCSNum].mGPIOx, gxFlashCSCtrlValAry[FlashCSNum].mBasePin);
-  pfFlashTxRxAry[FlashCSNum](cmd);
-  /*发送命令*/
-  if(addr != -1){
-    pfFlashTxRxAry[FlashCSNum]((addr>>16)&0xFF);
-    pfFlashTxRxAry[FlashCSNum]((addr>>8)&0xFF);
-    pfFlashTxRxAry[FlashCSNum](addr&0xFF);
-  }
-  
-  /*读写数据*/
-  while(len-- > 0){
-    unsigned char tmp;
-    if(inbuf){/*写数据*/
-      tmp = *inbuf++;
-    }else{
-      tmp = 0;
-    }
-
-    tmp = pfFlashTxRxAry[FlashCSNum](tmp);
-    if(outbuf){/*读数据*/
-      *outbuf++ = tmp;
-    }
-  }/*while(len-- > 0)*/
-#endif
   GPIO_SetBits(gxFlashCSCtrlValAry[FlashCSNum].mGPIOx, gxFlashCSCtrlValAry[FlashCSNum].mBasePin);
- 
+  
   switch(cmd){
     case eFlashCmd_Write :{
       for(int i=0; i<100; i++){
         __ASM("nop");
       }
-
       unsigned char stat;
       do{		
-        stat = Flash_RD_SR(FlashCSNum);
+          stat = Flash_RD_SR(FlashCSNum);
           #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
           dbgTRACE("%x\t %x\r\n",stat, stat & 1);
           #endif
@@ -217,35 +193,23 @@ signed char FlashCommand(unsigned char cmd, int addr, const void *indat, void *o
       for(int i=0; i<100; i++){
         __ASM("nop");
       }     
-      
     }
     break;
 
     default:
       break;
   }
-  //SET_SPI_SPEED_HIGH();
-#if defined (FreeRTOS_Kernel) 
+  #if defined (FreeRTOS_Kernel) 
   pfFlashSpiUnLockAry[FlashCSNum]();
-#endif
-  
+  #endif
   return 0;
-}
-
-uint32_t getFlashID(enum eFlashCSTYPE FlashCSNum)
-{
-  uint32_t id = 0;
-  
-  FlashCommand(eFlashCmd_DeviceID, -1, NULL, &id, 4, FlashCSNum);
-  
-  return id;
 }
 
 static void FlashSendCmd(unsigned char cmd, enum eFlashCSTYPE FlashCSNum){
   FlashCommand(cmd, -1, NULL, NULL, 0, FlashCSNum);
 }
 
-unsigned char FlashReadStatus(enum eFlashCSTYPE FlashCSNum){
+static unsigned char FlashReadStatus(enum eFlashCSTYPE FlashCSNum){
   unsigned char stat;
   
   FlashCommand(eFlashCmd_ReadStatus, -1, NULL, &stat, 1, FlashCSNum);
@@ -287,8 +251,80 @@ static void FlashWriteStatus(unsigned char stat, enum eFlashCSTYPE FlashCSNum)
 }
 
 
+
+static void DisableAllProtection(enum eFlashCSTYPE FlashCSNum)
+{
+  unsigned char status = FlashReadStatus(FlashCSNum);
+  
+  if((FlashChip[FlashCSNum].id & 0xFF) == 0x1F){
+    /*	Atemal*/
+    if((status& 0x0C) == 0x0C){
+      if(status& 0x80){
+        FlashWriteStatus(0x00, FlashCSNum);
+      }
+    }
+    
+    FlashWriteStatus(0x00, FlashCSNum);
+    return;
+  }
+  
+  if(!FlashWriteEnable(FlashCSNum)){
+    return;
+  }
+  
+  status = 0x40;
+  FlashCommand(eFlashCmd_WriteStatus , -1 , &status , NULL , 1, FlashCSNum);
+}
+
+static void FlashRepair(enum eFlashCSTYPE FlashCSNum)
+{
+  DisableAllProtection(FlashCSNum);
+}
+
+static uint32_t FlashScan(enum eFlashCSTYPE FlashCSNum)
+{
+  uint32_t id;
+  
+  id = getFlashID(FlashCSNum);
+  
+  if( id == 0xffffffff || id == 0 ){
+    id = getFlashID(FlashCSNum);
+  }
+  
+  for(int i=0; data_flash_ids[i].name != NULL ; i++){
+    
+    if( ( id&data_flash_ids[i].idmask ) != data_flash_ids[i].id ){
+      continue;
+    }
+    
+    FlashChip[FlashCSNum].id = id;
+    FlashChip[FlashCSNum].chipsize = data_flash_ids[i].chipsize;
+    FlashChip[FlashCSNum].opt = data_flash_ids[i].options;
+    
+    FlashRepair(FlashCSNum);
+    #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
+    dbgTRACE("%s\t %s\t%d\r\n",__FUNCTION__,data_flash_ids[i].name,FlashCSNum);
+    #endif   
+   
+    break;
+  } 
+
+  return id;
+}
+
+/******************getFlashID*********************/
+uint32_t getFlashID(enum eFlashCSTYPE FlashCSNum)
+{
+  uint32_t id = 0;
+  
+  FlashCommand(eFlashCmd_DeviceID, -1, NULL, &id, 4, FlashCSNum);
+  
+  return id;
+}
+
 /*Read Flash*/
-int FlashRead(unsigned int addr, void *buffer, int len, enum eFlashCSTYPE FlashCSNum){
+int FlashRead(unsigned int addr, void *buffer, int len, enum eFlashCSTYPE FlashCSNum)
+{
   if(addr + len > FlashChip[FlashCSNum].chipsize)
     return 0;
   
@@ -412,73 +448,9 @@ bool FlashEraseChip(enum eFlashCSTYPE FlashCSNum)
 }
 
 
-
-static void DisableAllProtection(enum eFlashCSTYPE FlashCSNum)
-{
-  unsigned char status = FlashReadStatus(FlashCSNum);
-  
-  if((FlashChip[FlashCSNum].id & 0xFF) == 0x1F){
-    /*	Atemal*/
-    if((status& 0x0C) == 0x0C){
-      if(status& 0x80){
-        FlashWriteStatus(0x00, FlashCSNum);
-      }
-    }
-    
-    FlashWriteStatus(0x00, FlashCSNum);
-    return;
-  }
-  
-  if(!FlashWriteEnable(FlashCSNum)){
-    return;
-  }
-  
-  status = 0x40;
-  FlashCommand(eFlashCmd_WriteStatus , -1 , &status , NULL , 1, FlashCSNum);
-}
-
-static void FlashRepair(enum eFlashCSTYPE FlashCSNum)
-{
-  DisableAllProtection(FlashCSNum);
-}
-
-uint32_t FlashScan(enum eFlashCSTYPE FlashCSNum)
-{
-  uint32_t id;
-  
-  id = getFlashID(FlashCSNum);
-  
-  if( id == 0xffffffff || id == 0 ){
-    id = getFlashID(FlashCSNum);
-  }
-  
-  for(int i=0; data_flash_ids[i].name != NULL ; i++){
-    
-    if( ( id&data_flash_ids[i].idmask ) != data_flash_ids[i].id ){
-      continue;
-    }
-    
-    FlashChip[FlashCSNum].id = id;
-    FlashChip[FlashCSNum].chipsize = data_flash_ids[i].chipsize;
-    FlashChip[FlashCSNum].opt = data_flash_ids[i].options;
-    
-    FlashRepair(FlashCSNum);
-    
-    #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
-    dbgTRACE("%s\t %s\t%d\r\n",__FUNCTION__,data_flash_ids[i].name,FlashCSNum);
-    #endif   
-   
-    break;
-  } 
-
-  return id;
-}
-
-
-
-extern void FlashPortInit(void);
 void Flash_Init(void)
 {
+  extern void FlashPortInit(void);
   uint8_t validCnt = 0;
   FlashPortInit(); 
   

@@ -3,15 +3,29 @@
  Name        : FM17xx.c
  Author      : 
  Version     :
- Copyright   : Your copyright notice
- Description : Hello World in C, Ansi-style
+ Copyright   : 
+ Description : 
  ============================================================================
  */
 #include "RFID\FM17xx.h"
 
 #if defined(RFID_CHIP_FM17xx)
 
-#define BUFMAXRLEN                       18
+#if(MFRC_ULTRALPRO_CPU > 0)    
+extern uint8_t gcRfidPcdPCB;
+void PcdSwitchPCB(void);   
+#endif
+
+/*****************************************************************/
+extern void MFRC_GPIOConfigure(void);
+extern uint8_t ReadRawRC(uint8_t Address);
+extern void WriteRawRC(uint8_t Address, uint8_t value);
+extern void MFRC_Delay(uint16_t mDlyTime);
+/*****************************************************************/
+
+#define BUFMAXRLEN              RFID_FIFO_MAXLENGTH
+
+
 #define RF_TimeOut		0x7f
 /* FM17xx命令码 */
 enum eFM17xxCmd_TYPE
@@ -215,7 +229,8 @@ char FM17xx_M500HostCodeKey(uint8_t *uncoded, uint8_t *coded){
 }
 
 
-uint8_t FM17xx_CommandSend(uint8_t count, uint8_t * buff, uint8_t Comm_Set){
+uint8_t FM17xx_CommandSend(uint8_t count, uint8_t * buff, uint8_t Comm_Set)
+{
   WriteRawRC(Command,0x00);
   FM17xx_ClearFIFO();
   
@@ -234,7 +249,9 @@ uint8_t FM17xx_CommandSend(uint8_t count, uint8_t * buff, uint8_t Comm_Set){
   return MI_NOTAGERR;	
 }
 
-char FM17xx_Request(uint8_t req_code,uint8_t *pTagType){
+/******************************************************/
+char FM17xx_Request(uint8_t req_code,uint8_t *pTagType)
+{
   uint8_t  temp;
   uint8_t ucComBuf[BUFMAXRLEN];
 
@@ -265,7 +282,8 @@ char FM17xx_Request(uint8_t req_code,uint8_t *pTagType){
   return MI_NOTAGERR;
 }
 
-char FM17xx_AntiColl(uint8_t *pSnr){
+char FM17xx_AntiColl(uint8_t *pSnr)
+{
   uint8_t	row, col;
   uint8_t	pre_row;
   uint8_t	temp;
@@ -324,7 +342,8 @@ char FM17xx_AntiColl(uint8_t *pSnr){
   }
 }
 
-char FM17xx_Select(uint8_t *pSnr){
+char FM17xx_Select(uint8_t *pSnr)
+{
   uint8_t   temp;
   uint8_t ucComBuf[BUFMAXRLEN];
 
@@ -370,7 +389,8 @@ char FM17xx_Select(uint8_t *pSnr){
   }
 }
 
-char FM17xx_LoadkeyE2_CPY(uint8_t *uncoded_keys){
+char FM17xx_LoadkeyE2_CPY(uint8_t *uncoded_keys)
+{
   uint8_t coded_keys[13];
 
   FM17xx_M500HostCodeKey(uncoded_keys, coded_keys);
@@ -383,7 +403,8 @@ char FM17xx_LoadkeyE2_CPY(uint8_t *uncoded_keys){
 }
 
 
-char FM17xx_AuthState(uint8_t auth_mode, uint8_t addr, uint8_t *pKey, uint8_t *pSnr){
+char FM17xx_AuthState(uint8_t auth_mode, uint8_t addr, uint8_t *pKey, uint8_t *pSnr)
+{
   uint8_t	temp, temp1;
   uint8_t ucComBuf[BUFMAXRLEN];
   
@@ -530,48 +551,8 @@ char FM17xx_Write(uint8_t Block_Adr, uint8_t *buff)
   }
 }
 
-#if 0
-char FM17xx_Restore(uint8_t Block_Adr){
-	uint8_t	temp, i;
-	uint8_t ucComBuf[BUFMAXRLEN];
-    
-    
-	WriteRawRC(CRCPresetLSB,0x63);
-	WriteRawRC(CWConductance,0x3f);
-	WriteRawRC(ChannelRedundancy,0x07);
-	*ucComBuf = PICC_RESTORE;
-	*(ucComBuf + 1) = Block_Adr;
-	if(MI_OK != FM17xx_CommandSend(2, ucComBuf, eFM17xxCmd_Transceive)){
-		return MI_NOTAGERR;
-	}
-
-	temp = SPIRead(FIFO_Length);
-	if(temp == 0)
-	{
-		return MI_BYTECOUNTERR;
-	}
-
-	FM17xx_ReadFIFO(ucComBuf);
-	switch(ucComBuf[0])
-	{
-      case 0x00:	/* break; */return(MI_NOTAUTHERR);	
-      case 0x04:	return(MI_EMPTY);
-      case 0x0a:	break;
-      case 0x01:	return(MI_CRCERR);
-      case 0x05:	return(MI_PARITYERR);
-      default:	return(MI_RESTERR);
-	}
-
-    memset(ucComBuf, 0, 4);
-    if(MI_OK != FM17xx_CommandSend(4, ucComBuf, eFM17xxCmd_Transmit)){
-    return MI_RESTERR;
-	}
-
-	return MI_OK;
-}
-#endif
-
-char FM17xx_Value(uint8_t mOpmode,uint8_t addr,uint8_t *pValue){
+char FM17xx_Value(uint8_t mOpmode,uint8_t addr,uint8_t *pValue)
+{
 	uint8_t		temp;
 	uint8_t ucComBuf[BUFMAXRLEN];;
 	
@@ -602,31 +583,31 @@ char FM17xx_Value(uint8_t mOpmode,uint8_t addr,uint8_t *pValue){
 	default:	return(MI_DECRERR);
 	}
 
-    memcpy(ucComBuf, pValue, 4);
+        memcpy(ucComBuf, pValue, 4);
 	if(FM17xx_CommandSend(4, ucComBuf, eFM17xxCmd_Transceive) != MI_OK){
 		return MI_NOTAGERR;
 	}
     
-    ucComBuf[0] = PICC_TRANSFER;
+        ucComBuf[0] = PICC_TRANSFER;
 	ucComBuf[1] = addr;
 	
-    if(FM17xx_CommandSend(4, ucComBuf, eFM17xxCmd_Transceive) != MI_OK){
+        if(FM17xx_CommandSend(4, ucComBuf, eFM17xxCmd_Transceive) != MI_OK){
 		return MI_NOTAGERR;
 	}
-    
-	
+
     if(ReadRawRC(FIFO_Length)){
       FM17xx_ReadFIFO(ucComBuf);
       if(ucComBuf[0] == 0x0A){
         return MI_OK;
       }
-	}
+     }
     
     return MI_ERR;
 	
 }
 
-char FM17xx_Halt(void){
+char FM17xx_Halt(void)
+{
   uint8_t ucComBuf[2];
   
   WriteRawRC(ChannelRedundancy, 0x07);			//
@@ -636,6 +617,129 @@ char FM17xx_Halt(void){
   return FM17xx_CommandSend(2, ucComBuf, eFM17xxCmd_Transmit);
 }
 
+#if(MFRC_ULTRALPRO_CPU > 0) 
+char FM17xx_Rats(uint8_t *pOutBfr, uint8_t *pOutLen)
+{
+  uint8_t ucComBuf[BUFMAXRLEN];
+  uint8_t temp;
+  #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
+  dbgTRACE_FUNCTION();
+  #endif
+  //WriteRawRC(CRCPresetLSB,0x63);
+  //WriteRawRC(CWConductance,0x3f);
+  // WriteRawRC(ModConductance,0x3f);
+  WriteRawRC(ChannelRedundancy,0x0f); // 开启CRC,奇偶校验校验 
+  memset(ucComBuf, 0, BUFMAXRLEN);
+  
+  ucComBuf[0] = PICC_RATS;
+  ucComBuf[1] = 0x51; 
+	                      
+  if(FM17xx_CommandSend(2, ucComBuf, eFM17xxCmd_Transceive) == MI_OK){
+    if((temp = ReadRawRC(FIFO_Length)) < 3){
+      return(MI_ERR);
+    }else{
+      if(pOutBfr){
+        FM17xx_ReadFIFO(pOutBfr);
+      }else{
+        FM17xx_ReadFIFO(ucComBuf);
+      }
+      if(pOutLen){
+        *pOutLen = temp;
+      }
+      #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
+      dbgTRACE("%d \r\n", temp);
+      for(int i=0; i<temp; i++){
+        if(pOutBfr){
+          FM17xx_ReadFIFO(pOutBfr);
+          dbgTRACE("%0.2x ", pOutBfr[i]);
+        }else{
+          dbgTRACE("%0.2x ", ucComBuf[i]);
+        }  
+      }
+      dbgTRACE("\r\n");
+      #endif
+      return MI_OK;
+    }
+  }else{
+    return(MI_ERR);
+  }
+}
+
+
+char FM17xx_PPS(void)
+{
+  uint8_t ucComBuf[BUFMAXRLEN];
+  uint8_t temp;
+  #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
+  dbgTRACE_FUNCTION();
+  #endif
+  //WriteRawRC(CRCPresetLSB,0x63);
+  //WriteRawRC(CWConductance,0x3f);
+  // WriteRawRC(ModConductance,0x3f);
+  WriteRawRC(ChannelRedundancy,0x0f); // 开启CRC,奇偶校验校验 
+  memset(ucComBuf, 0, BUFMAXRLEN);
+  
+  ucComBuf[0] = PICC_PPS;
+  ucComBuf[1] = 0x11; 
+  ucComBuf[2] = 0x0A;                              
+  if(FM17xx_CommandSend(3, ucComBuf, eFM17xxCmd_Transceive) == MI_OK){
+    if((temp = ReadRawRC(FIFO_Length)) < 1){
+      return(MI_ERR);
+    }else{
+      FM17xx_ReadFIFO(ucComBuf);
+      #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
+      dbgTRACE("%d \r\n", temp);
+      for(int i=0; i<temp; i++){
+        dbgTRACE("%0.2x ", ucComBuf[i]);
+      }
+      dbgTRACE("\r\n");
+      #endif
+      return MI_OK;
+    }
+  }else{
+    return(MI_ERR);
+  }
+}
+
+char FM17xx_ComCmdPro(uint8_t mode, uint8_t *pInBfr, uint8_t InLen, uint8_t *pOutBfr, uint8_t *pOutLen)
+{
+  unsigned char  unLen = InLen;
+  #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
+  dbgTRACE_FUNCTION();
+  #endif
+  //WriteRawRC(CRCPresetLSB,0x63);
+  //WriteRawRC(CWConductance,0x3f);
+  // WriteRawRC(ModConductance,0x3f);
+  WriteRawRC(ChannelRedundancy,0x0f); // 开启CRC,奇偶校验校验 
+  
+  if(mode){
+    PcdSwitchPCB();
+    pInBfr[0] = gcRfidPcdPCB;		
+    pInBfr[1] = 0x01;
+    unLen += 2;
+  }
+	                      
+  if(FM17xx_CommandSend(unLen, pInBfr, eFM17xxCmd_Transceive) == MI_OK){
+    if(*pOutLen = ReadRawRC(FIFO_Length)){
+      FM17xx_ReadFIFO(pOutBfr);
+      #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
+      dbgTRACE("%d \r\n", *pOutLen);
+      for(int i=0; i<*pOutLen; i++){
+          dbgTRACE("%0.2X ", pOutBfr[i]);
+      }
+      dbgTRACE("\r\n");
+      #endif
+      return MI_OK;
+    }else{
+      return(MI_ERR);
+      
+    }
+  }else{
+    return(MI_ERR);
+  }
+}
+
+#endif
 
 void FM17xx_Init(void){
   MFRC_GPIOConfigure();

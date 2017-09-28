@@ -23,9 +23,9 @@ static void InitBoardPeripheral(void){
     
   InitParam();
   
-  vETH_EmacInit();
+  //vETH_EmacInit();
   
-  startEthernet();
+  //startEthernet();
 }
 
 
@@ -90,7 +90,6 @@ void vDelay1STask(void){
   #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
   dbgTRACE("appStart\n");
   #endif 
-  
   GPIO_ToggleBits(GPIOE,GPIO_Pin_2);
 }
 

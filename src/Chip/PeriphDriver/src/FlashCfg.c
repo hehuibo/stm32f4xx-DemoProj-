@@ -9,9 +9,7 @@
  */
 #include "flash.h"
 
-/*
- *
- */
+/***************************************************/
 const struct data_flash_dev data_flash_ids[]=
 {
 /*	name-------------id--------mask-------page-----size--------erasesize-opt --- */
@@ -51,10 +49,13 @@ const struct data_flash_dev data_flash_ids[]=
 	{0,},
 };
 
+/***************************************************/
+
 //FlashCS
 const xTFlashCSCtrlValTypeDef gxFlashCSCtrlValAry[FLASH_CS_NUM] = {
   {FLASH_CS0_PORT, FLASH_CS0_PIN},  /*eFLASH_ID_CS0*/
 };
+/***************************************************/
 
 #if defined (FLASH_DMA_TXRX)
 const pfnFlashDMATxRxFUNCTIONAry pfFlashDMATxRxAry = {
@@ -74,6 +75,7 @@ const pfFlashTxRxFUNCTION pfFlashTxRxAry = {
 };
 #endif
 
+#if 0
 /*SPI Lock*/
 #if defined (FreeRTOS_Kernel) 
 const pfFlashSpiFUNCTION pfFlashSpiLockAry = {
@@ -84,7 +86,7 @@ const pfFlashSpiFUNCTION pfFlashSpiUnLockAry = {
   SPI1_Unlock,
 };
 #endif
-
+#endif
 void FlashPortInit(void)
 {
   GPIO_InitTypeDef GPIO_InitStructure;

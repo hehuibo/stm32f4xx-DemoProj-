@@ -51,7 +51,8 @@ void vStartUpConfigure(void)
 #ifdef _LOADER
   NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0);
 #else
-  NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x10000);
+  //NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x10000);
+  NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0);
   __ASM("CPSIE  I");
 #endif
 

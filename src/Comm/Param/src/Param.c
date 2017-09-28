@@ -22,7 +22,6 @@
 
 static uint32_t prvDevParamAddr;	
 
-//#pragma location = "AHB_RAM_MEMORY"
 xTDevParamTypeDef  gs_DevParam;
 
 struct _tag_ParamAddrLimit{
