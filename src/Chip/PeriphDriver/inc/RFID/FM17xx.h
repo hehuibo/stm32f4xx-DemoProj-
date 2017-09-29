@@ -32,13 +32,13 @@ char FM17xx_Request(unsigned char req_code,unsigned char *pTagType);
 
 char FM17xx_AuthState(uint8_t auth_mode, uint8_t addr, uint8_t *pKey, uint8_t *pSnr);
 
-#if(MFRC_ULTRALPRO_CPU > 0) 
+#if (MFRC_ULTRALPRO_CPU > 0) 
 
 char FM17xx_PPS(void);
 
 char FM17xx_Rats(uint8_t *pOutBfr, uint8_t *pOutLen);
 
-char FM17xx_ComCmdPro(uint8_t mode, uint8_t *pInBfr, uint8_t InLen, uint8_t *pOutBfr, uint8_t *pOutLen);
+char FM17xx_ComCmdPro(uint8_t *pInBfr, uint8_t InLen, uint8_t *pOutBfr, uint8_t *pOutLen);
 #endif
 
 #endif

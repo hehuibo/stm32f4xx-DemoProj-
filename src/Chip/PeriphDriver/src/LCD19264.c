@@ -10,7 +10,8 @@
 #include "LCD19264.h"
 #include "TimDly.h"
 
-#define LcdDly(x) //TimDlyMs(x)
+extern void SysTickDlyMs(uint16_t ms);
+#define LcdDly(x) SysTickDlyMs(x)//TimDlyMs(x)
 
 #define LCD_RST_PIN          GPIO_Pin_1
 #define LCD_RST_PORT         GPIOB
@@ -46,7 +47,7 @@ static void LCD19264_GPIOConfigure(void)
   
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;  
   
   /*CS*/
@@ -108,6 +109,7 @@ void LcdWR(uint8_t mData, uint8_t mWRS, enum eTagLcdWRCtrlTYPE mType)
 void LcdWRCmdDat(bool bData, uint8_t mCmdDat, enum eTagLcdWRCtrlTYPE mType)
 {
   SET_LCD_CS(false);
+  LcdDly(1);
   SET_LCD_CS(true);
   LcdWR(mCmdDat, bData, mType);//1,data, 0: cmd
   LcdDly(1);
@@ -121,7 +123,7 @@ void LCD19264_Init(void)
   LcdDly(5);
   SET_LCD_RST(true);
   SET_LCD_RST(false);
-  LcdDly(1);
+  LcdDly(5);
   SET_LCD_RST(true);
   
   LcdWRCmdDat(false, 0x30, eLcdWRCtrlTYPE_HIGHT);
@@ -156,13 +158,19 @@ void LcdShowChars(uint8_t addr, const uint8_t *pStr, uint8_t cout,  enum eTagLcd
   
   LcdWRCmdDat(false, addr, mType);
 
+#if 0
   for(uint8_t i=0; i<cout; i++){
    LcdWRCmdDat(true, pStr[i*2], mType); 
    LcdWRCmdDat(true, pStr[i*2+1], mType);
   }
-  
+#else
+  while(*pStr){
+    LcdWRCmdDat(true, *pStr, mType);
+    pStr++;
+  }
+#endif
   //LcdWRCmdDat(false, 0x34, mType);
- // LcdWRCmdDat(false, 0x34, eLcdWRCtrlTYPE_HIGHT);
+  //LcdWRCmdDat(false, 0x34, eLcdWRCtrlTYPE_HIGHT);
 }
 
 void LcdPutStr(const uint8_t *pStr, uint8_t len, enum eTagLcdWRCtrlTYPE mLine, uint8_t offset)

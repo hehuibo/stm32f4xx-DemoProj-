@@ -11,7 +11,7 @@
 
 #if defined(RFID_CHIP_FM17xx)
 
-#if(MFRC_ULTRALPRO_CPU > 0)    
+#if (MFRC_ULTRALPRO_CPU > 0)    
 extern uint8_t gcRfidPcdPCB;
 void PcdSwitchPCB(void);   
 #endif
@@ -24,52 +24,50 @@ extern void MFRC_Delay(uint16_t mDlyTime);
 /*****************************************************************/
 
 #define BUFMAXRLEN              RFID_FIFO_MAXLENGTH
-
-
 #define RF_TimeOut		0x7f
 /* FM17xx命令码 */
 enum eFM17xxCmd_TYPE
 {
-  eFM17xxCmd_Transceive   = 0x1E,			/* 发送接收命令 */
+  eFM17xxCmd_Transceive   =     0x1E,			/* 发送接收命令 */
   eFM17xxCmd_Transmit	  =	0x1a,			/* 发送命令 */
-  eFM17xxCmd_ReadE2	      =	0x03,			/* 读FM17xx EEPROM命令 */
+  eFM17xxCmd_ReadE2	  =	0x03,			/* 读FM17xx EEPROM命令 */
   eFM17xxCmd_WriteE2	  =	0x01,			/* 写FM17xx EEPROM命令 */
   eFM17xxCmd_Authent1	  =	0x0c,			/* 验证命令认证过程第1步 */
   eFM17xxCmd_Authent2	  =	0x14,			/* 验证命令认证过程第2步 */
-  eFM17xxCmd_LoadKeyE2    = 0x0b,			/* 将密钥从EEPROM复制到KEY缓存 */
-  eFM17xxCmd_LoadKey	  = 0x19,			/* 将密钥从FIFO缓存复制到KEY缓存 */
+  eFM17xxCmd_LoadKeyE2    =     0x0b,			/* 将密钥从EEPROM复制到KEY缓存 */
+  eFM17xxCmd_LoadKey	  =     0x19,			/* 将密钥从FIFO缓存复制到KEY缓存 */
 };
 
 //FM17xx Reg
-#define Page_Sel				0x00	/* 页写寄存器 */
-#define Command					0x01	/* 命令寄存器 */
-#define FIFO					0x02	/* 64字节FIFO缓冲的输入输出寄存器 */
+#define Page_Sel		        0x00	/* 页写寄存器 */
+#define Command			        0x01	/* 命令寄存器 */
+#define FIFO			        0x02	/* 64字节FIFO缓冲的输入输出寄存器 */
 #define PrimaryStatus			0x03	/* 发射器接收器及FIFO的状态寄存器1 */
-#define FIFO_Length				0x04	/* 当前FIFO内字节数寄存器 */
+#define FIFO_Length		        0x04	/* 当前FIFO内字节数寄存器 */
 #define SecondaryStatus			0x05	/* 各种状态寄存器2 */
-#define InterruptEn				0x06	/* 中断使能/禁止寄存器 */
-#define Int_Req					0x07	/* 中断请求标识寄存器 */
-#define Control					0x09	/* 控制寄存器 */
-#define ErrorFlag				0x0A	/* 错误状态寄存器 */
-#define CollPos					0x0B	/* 冲突检测寄存器 */
-#define TimerValue				0x0c	/* 定时器当前值 */
-#define Bit_Frame				0x0F	/* 位帧调整寄存器 */
-#define TxControl				0x11	/* 发送控制寄存器 */
+#define InterruptEn		        0x06	/* 中断使能/禁止寄存器 */
+#define Int_Req			        0x07	/* 中断请求标识寄存器 */
+#define Control			        0x09	/* 控制寄存器 */
+#define ErrorFlag		        0x0A	/* 错误状态寄存器 */
+#define CollPos			        0x0B	/* 冲突检测寄存器 */
+#define TimerValue		        0x0c	/* 定时器当前值 */
+#define Bit_Frame		        0x0F	/* 位帧调整寄存器 */
+#define TxControl		        0x11	/* 发送控制寄存器 */
 #define CWConductance			0x12	/* 选择发射脚TX1和TX2发射天线的阻抗 */
 #define ModConductance			0x13	/* 定义输出驱动阻抗 */
 #define CoderControl			0x14	/* 定义编码模式和时钟频率 */
 #define TypeBFraming			0x17	/* 定义ISO14443B帧格式 */
 #define DecoderControl			0x1a	/* 解码控制寄存器 */
-#define RxControl2				0x1e	/* 解码控制及选择接收源 */
-#define RxWait					0x21	/* 选择发射和接收之间的时间间隔 */
+#define RxControl2		        0x1e	/* 解码控制及选择接收源 */
+#define RxWait			        0x21	/* 选择发射和接收之间的时间间隔 */
 #define ChannelRedundancy		0x22	/* RF通道检验模式设置寄存器 */
 #define CRCPresetLSB			0x23
 #define CRCPresetMSB			0x24
-#define MFOUTSelect				0x26	/* mf OUT 选择配置寄存器 */
-#define TimerClock				0x2a	/* 定时器周期设置寄存器 */
+#define MFOUTSelect		        0x26	/* mf OUT 选择配置寄存器 */
+#define TimerClock			0x2a	/* 定时器周期设置寄存器 */
 #define TimerControl			0x2b	/* 定时器控制寄存器 */
-#define TimerReload				0x2c	/* 定时器初值寄存器 */
-#define TypeSH					0x31	/* 上海标准选择寄存器 */
+#define TimerReload		        0x2c	/* 定时器初值寄存器 */
+#define TypeSH				0x31	/* 上海标准选择寄存器 */
 #define TestDigiSelect			0x3d	/* 测试管脚配置寄存器 */
 
 char FM17xx_BusSel(void){
@@ -617,7 +615,7 @@ char FM17xx_Halt(void)
   return FM17xx_CommandSend(2, ucComBuf, eFM17xxCmd_Transmit);
 }
 
-#if(MFRC_ULTRALPRO_CPU > 0) 
+#if (MFRC_ULTRALPRO_CPU > 0) 
 char FM17xx_Rats(uint8_t *pOutBfr, uint8_t *pOutLen)
 {
   uint8_t ucComBuf[BUFMAXRLEN];
@@ -701,7 +699,7 @@ char FM17xx_PPS(void)
   }
 }
 
-char FM17xx_ComCmdPro(uint8_t mode, uint8_t *pInBfr, uint8_t InLen, uint8_t *pOutBfr, uint8_t *pOutLen)
+char FM17xx_ComCmdPro(uint8_t *pInBfr, uint8_t InLen, uint8_t *pOutBfr, uint8_t *pOutLen)
 {
   unsigned char  unLen = InLen;
   #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
@@ -712,12 +710,10 @@ char FM17xx_ComCmdPro(uint8_t mode, uint8_t *pInBfr, uint8_t InLen, uint8_t *pOu
   // WriteRawRC(ModConductance,0x3f);
   WriteRawRC(ChannelRedundancy,0x0f); // 开启CRC,奇偶校验校验 
   
-  if(mode){
-    PcdSwitchPCB();
-    pInBfr[0] = gcRfidPcdPCB;		
-    pInBfr[1] = 0x01;
-    unLen += 2;
-  }
+  PcdSwitchPCB();
+  pInBfr[0] = gcRfidPcdPCB;		
+  pInBfr[1] = 0x01;
+  unLen += 2;
 	                      
   if(FM17xx_CommandSend(unLen, pInBfr, eFM17xxCmd_Transceive) == MI_OK){
     if(*pOutLen = ReadRawRC(FIFO_Length)){

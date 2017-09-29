@@ -53,9 +53,8 @@ struct _tag_DataFlash
 
 /***************************************************/
 #if defined(SPI1_DMA_TXRX) || defined(SPI2_DMA_TXRX)
-//#define FLASH_DMA_TXRX
-#endif
 #define FLASH_DMA_TXRX
+#endif
 
 typedef struct _tag_FlashCSCtrlValTYPE
 {

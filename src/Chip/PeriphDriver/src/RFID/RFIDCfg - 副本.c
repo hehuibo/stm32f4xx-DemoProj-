@@ -6,16 +6,6 @@
 #include "RFID\FM17xx.h"   
 #endif
 
-/*
-  GND
-  VCC
-  MISO
-  SCK
-  MOSI
-  CS
-  RST
-*/
-
 /*M1电子钱包
 某一块写为如下格式，则该块为钱包，可接收扣款和充值命令
 	4字节金额（低字节在前）＋4字节金额取反＋4字节金额＋1字节块地址＋1字节块地址取反＋1字节块地址＋1字节块地址取反
@@ -33,18 +23,18 @@
     #define MFRC_MISO_GPIO_CLK	RCC_AHB1Periph_GPIOB                 
     #endif
 
-    #define MFRC_CS_GPIO_CLK	    RCC_AHB1Periph_GPIOA
-    #define MFRC_RST_GPIO_CLK	    RCC_AHB1Periph_GPIOA
+    #define MFRC_CS_GPIO_CLK	    RCC_AHB1Periph_GPIOF
+    #define MFRC_RST_GPIO_CLK	    RCC_AHB1Periph_GPIOF
 
   #else        /*STM32F10x*/
     #if (_MFRC_SOFT_SPI > 0)
-    #define MFRC_SCK_GPIO_CLK	RCC_APB2Periph_GPIOB
-    #define MFRC_MOSI_GPIO_CLK	RCC_APB2Periph_GPIOB
-    #define MFRC_MISO_GPIO_CLK	RCC_APB2Periph_GPIOB
+    #define MFRC_SCK_GPIO_CLK	RCC_APB2Periph_GPIOA
+    #define MFRC_MOSI_GPIO_CLK	RCC_APB2Periph_GPIOA
+    #define MFRC_MISO_GPIO_CLK	RCC_APB2Periph_GPIOA
     #endif
 
-    #define MFRC_CS_GPIO_CLK	RCC_APB2Periph_GPIOA
-    #define MFRC_RST_GPIO_CLK	RCC_APB2Periph_GPIOA
+    #define MFRC_CS_GPIO_CLK	RCC_APB2Periph_GPIOC
+    #define MFRC_RST_GPIO_CLK	RCC_APB2Periph_GPIOC
   #endif
 
   /**********************IO口配置*******************************/
@@ -70,34 +60,34 @@
 
   /*****************CS、RST IO***************************/
   #define MFRC_CS_PIN		GPIO_Pin_6
-  #define MFRC_CS_PORT	        GPIOA
+  #define MFRC_CS_PORT	        GPIOF
   #define Set_MFRC_CS(x)	x ? GPIO_SetBits(MFRC_CS_PORT,MFRC_CS_PIN):GPIO_ResetBits(MFRC_CS_PORT,MFRC_CS_PIN);
    
   #define MFRC_RST_PIN		GPIO_Pin_7
-  #define MFRC_RST_PORT		GPIOA
+  #define MFRC_RST_PORT		GPIOF
   #define Set_MFRC_RST(x)	x ? GPIO_SetBits(MFRC_RST_PORT,MFRC_RST_PIN):GPIO_ResetBits(MFRC_RST_PORT,MFRC_RST_PIN);
 
 #else
 /**********************IO口时钟配置*******************************/
 #if defined(STM32F40_41xxx)     /*STM32F4xx*/
   #if (_MFRC_SOFT_SPI > 0)
-  #define MFRC_SCK_GPIO_CLK	RCC_AHB1Periph_GPIOF
+  #define MFRC_SCK_GPIO_CLK	    RCC_AHB1Periph_GPIOF
   #define MFRC_MOSI_GPIO_CLK	RCC_AHB1Periph_GPIOF
   #define MFRC_MISO_GPIO_CLK	RCC_AHB1Periph_GPIOF                  
   #endif
 
-  #define MFRC_CS_GPIO_CLK	RCC_AHB1Periph_GPIOF
-  #define MFRC_RST_GPIO_CLK	RCC_AHB1Periph_GPIOF
+  #define MFRC_CS_GPIO_CLK	    RCC_AHB1Periph_GPIOF
+  #define MFRC_RST_GPIO_CLK	    RCC_AHB1Periph_GPIOF
 
 #else        /*STM32F10x*/
   #if (_MFRC_SOFT_SPI > 0)
-  #define MFRC_SCK_GPIO_CLK     RCC_APB2Periph_GPIOB
-  #define MFRC_MOSI_GPIO_CLK	RCC_APB2Periph_GPIOB
-  #define MFRC_MISO_GPIO_CLK	RCC_APB2Periph_GPIOB
+  #define MFRC_SCK_GPIO_CLK	    RCC_APB2Periph_GPIOA
+  #define MFRC_MOSI_GPIO_CLK	RCC_APB2Periph_GPIOA
+  #define MFRC_MISO_GPIO_CLK	RCC_APB2Periph_GPIOA
   #endif
 
-  #define MFRC_CS_GPIO_CLK	RCC_APB2Periph_GPIOA
-  #define MFRC_RST_GPIO_CLK	RCC_APB2Periph_GPIOA
+  #define MFRC_CS_GPIO_CLK	RCC_APB2Periph_GPIOC
+  #define MFRC_RST_GPIO_CLK	RCC_APB2Periph_GPIOC
 #endif
 
 /**********************IO口配置*******************************/
@@ -138,6 +128,78 @@ void MFRC_Delay(uint16_t mDlyTime){
     for (uint16_t j = mDlyTime; j > 0; j--);
   }
 }
+
+
+/********************************************/
+#if(MFRC_ULTRALPRO_CPU > 0)
+uint8_t rfidDes( enum eRFIDCRYMode Mode,uint8_t *MsgIn, uint8_t *Key, uint8_t *MsgOut);
+unsigned char rfidMAC(unsigned char *init_data,unsigned char *mac_key,unsigned char data_len,unsigned char *in_data,unsigned char *mac_data);
+uint8_t rfidTdes( enum eRFIDCRYMode Mode,uint8_t *MsgIn, uint8_t *Key, uint8_t *MsgOut);
+#endif
+
+
+/*******************************************/
+xTRfCtrlFUNCTIONTypeDef gfn_rfidCtrl;
+void RFID_Init(void)
+{
+  memset(&gfn_rfidCtrl, 0, sizeof(gfn_rfidCtrl));
+  
+#if defined(RFID_CHIP_RC522)  
+  MFRC522_Init();
+  
+  gfn_rfidCtrl.pfnHalt = PcdHalt;
+
+  gfn_rfidCtrl.pfnSelect = PcdSelect;
+
+  gfn_rfidCtrl.pfnAnticoll = PcdAnticoll;
+
+  gfn_rfidCtrl.pfnWrite = PcdWrite;
+
+  gfn_rfidCtrl.pfnRead = PcdRead;
+
+  gfn_rfidCtrl.pfnRequest = PcdRequest;
+
+  gfn_rfidCtrl.pfnAuthState = PcdAuthState; 
+  
+  #if (MFRC_ULTRALPRO_CPU > 0) 
+  gfn_rfidCtrl.pfnRATS = PcdRATS;
+  
+  gfn_rfidCtrl.pfnCmdPro = PcdComCmdPro;
+  
+  #endif
+#elif defined(RFID_CHIP_FM17xx)
+  FM17xx_Init();
+  
+  gfn_rfidCtrl.pfnHalt = FM17xx_Halt;
+
+  gfn_rfidCtrl.pfnSelect = FM17xx_Select;
+
+  gfn_rfidCtrl.pfnAnticoll = FM17xx_AntiColl;
+
+  gfn_rfidCtrl.pfnWrite = FM17xx_Write;
+
+  gfn_rfidCtrl.pfnRead = FM17xx_Read;
+
+  gfn_rfidCtrl.pfnRequest = FM17xx_Request;
+
+  gfn_rfidCtrl.pfnAuthState = FM17xx_AuthState; 
+  
+  
+  #if (MFRC_ULTRALPRO_CPU > 0) 
+  gfn_rfidCtrl.pfnRATS = FM17xx_Rats;
+  
+  gfn_rfidCtrl.pfnCmdPro = FM17xx_ComCmdPro;
+  #endif
+#endif
+  
+#if (MFRC_ULTRALPRO_CPU > 0)  
+  gfn_rfidCtrl.pfnDES = rfidDes;
+  gfn_rfidCtrl.pfnTDES = rfidTdes;
+  gfn_rfidCtrl.pfnMAC = rfidMAC;
+#endif  
+}
+
+
 
 /*****************************************/
 #if (_MFRC_SOFT_SPI > 0)
@@ -310,74 +372,5 @@ void MFRC_GPIOConfigure(void){
   #if defined(RFID_CHIP_RC522)  
   Set_MFRC_RST(1); 
   #endif
-}
-
-
-/********************************************/
-#if(MFRC_ULTRALPRO_CPU > 0)
-uint8_t rfidDes( enum eRFIDCRYMode Mode,uint8_t *MsgIn, uint8_t *Key, uint8_t *MsgOut);
-unsigned char rfidMAC(unsigned char *init_data,unsigned char *mac_key,unsigned char data_len,unsigned char *in_data,unsigned char *mac_data);
-uint8_t rfidTdes( enum eRFIDCRYMode Mode,uint8_t *MsgIn, uint8_t *Key, uint8_t *MsgOut);
-#endif
-/*******************************************/
-xTRfCtrlFUNCTIONTypeDef gfn_rfidCtrl;
-void RFID_Init(void)
-{
-  memset(&gfn_rfidCtrl, 0, sizeof(gfn_rfidCtrl));
-  
-#if defined(RFID_CHIP_RC522)  
-  MFRC522_Init();
-  
-  gfn_rfidCtrl.pfnHalt = PcdHalt;
-
-  gfn_rfidCtrl.pfnSelect = PcdSelect;
-
-  gfn_rfidCtrl.pfnAnticoll = PcdAnticoll;
-
-  gfn_rfidCtrl.pfnWrite = PcdWrite;
-
-  gfn_rfidCtrl.pfnRead = PcdRead;
-
-  gfn_rfidCtrl.pfnRequest = PcdRequest;
-
-  gfn_rfidCtrl.pfnAuthState = PcdAuthState; 
-  
-  #if (MFRC_ULTRALPRO_CPU > 0) 
-  gfn_rfidCtrl.pfnRATS = PcdRATS;
-  
-  gfn_rfidCtrl.pfnCmdPro = PcdComCmdPro;
-  
-  #endif
-  
-#elif defined(RFID_CHIP_FM17xx)
-  FM17xx_Init();
-  
-  gfn_rfidCtrl.pfnHalt = FM17xx_Halt;
-
-  gfn_rfidCtrl.pfnSelect = FM17xx_Select;
-
-  gfn_rfidCtrl.pfnAnticoll = FM17xx_AntiColl;
-
-  gfn_rfidCtrl.pfnWrite = FM17xx_Write;
-
-  gfn_rfidCtrl.pfnRead = FM17xx_Read;
-
-  gfn_rfidCtrl.pfnRequest = FM17xx_Request;
-
-  gfn_rfidCtrl.pfnAuthState = FM17xx_AuthState; 
-  
-  
-  #if (MFRC_ULTRALPRO_CPU > 0) 
-  gfn_rfidCtrl.pfnRATS = FM17xx_Rats;
-  
-  gfn_rfidCtrl.pfnCmdPro = FM17xx_ComCmdPro;
-  #endif
-#endif
-  
-#if (MFRC_ULTRALPRO_CPU > 0)  
-  gfn_rfidCtrl.pfnDES = rfidDes;
-  gfn_rfidCtrl.pfnTDES = rfidTdes;
-  gfn_rfidCtrl.pfnMAC = rfidMAC;
-#endif  
 }
 

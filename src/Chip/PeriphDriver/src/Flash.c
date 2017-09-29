@@ -149,6 +149,7 @@ signed char FlashCommand(unsigned char cmd, int addr, const void *indat, void *o
   
   
   /*∑¢ÀÕ√¸¡Ó*/
+#if defined (FLASH_DMA_TXRX)
   mCnt = 0;
   FLASH_TX_BUFFER[mCnt++] = cmd;
   GPIO_ResetBits(gxFlashCSCtrlValAry[FlashCSNum].mGPIOx, gxFlashCSCtrlValAry[FlashCSNum].mBasePin);
@@ -175,6 +176,11 @@ signed char FlashCommand(unsigned char cmd, int addr, const void *indat, void *o
       memcpy(outbuf, &FLASH_RX_BUFFER[mCnt - len], len);
     } 
   }
+#else
+  
+  
+#endif
+  
   GPIO_SetBits(gxFlashCSCtrlValAry[FlashCSNum].mGPIOx, gxFlashCSCtrlValAry[FlashCSNum].mBasePin);
   
   switch(cmd){

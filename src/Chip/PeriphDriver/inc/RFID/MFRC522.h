@@ -21,7 +21,7 @@ void CalulateCRC(unsigned char *pIndata,unsigned char len,unsigned char *pOutDat
 
 #if(MFRC_ULTRALPRO_CPU > 0) 
 char PcdRATS(uint8_t *pOutBfr, uint8_t *pOutLen);
-char PcdComCmdPro(uint8_t mode, uint8_t *pInBfr, uint8_t inLen, uint8_t *pOutBfr, uint8_t *pOutLen);
+char PcdComCmdPro(uint8_t *pInBfr, uint8_t inLen, uint8_t *pOutBfr, uint8_t *pOutLen);
 #endif
 
 #endif

@@ -23,8 +23,8 @@
 //#define SPI1_PIN_REAMP
 #endif
 
-#define SPI1_DMA_TXRX
-#define SPI2_DMA_TXRX
+//#define SPI1_DMA_TXRX
+//#define SPI2_DMA_TXRX
 
 void SPI1_Configure(void);
 

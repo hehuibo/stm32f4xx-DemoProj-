@@ -1,5 +1,5 @@
 #include "RFID\RFID.h"
-#if(MFRC_ULTRALPRO_CPU > 0)
+#if (MFRC_ULTRALPRO_CPU > 0)
 
 #define bit1    0x80
 #define bit2    0x40

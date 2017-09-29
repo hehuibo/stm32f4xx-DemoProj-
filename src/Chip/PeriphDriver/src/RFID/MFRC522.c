@@ -674,7 +674,7 @@ char PcdRATS(uint8_t *pOutBfr, uint8_t *pOutLen)
   memset(ucComMF522Buf, 0, MAXRLEN);
 
   ucComMF522Buf[0] = PICC_RATS;		
-  ucComMF522Buf[1] = 0x41;				
+  ucComMF522Buf[1] = 0x51;				
 
   CalulateCRC(ucComMF522Buf,2,&ucComMF522Buf[2]);	// 生成发送内容的CRC校验,保存到最后两个字节
 
@@ -714,32 +714,27 @@ char PcdComCmdPro(uint8_t mode, uint8_t *pInBfr, uint8_t inLen, uint8_t *pOutBfr
   char status;
   unsigned int  unLen = inLen;
  // ClearBitMask(Status2Reg,0x08);	// 清空校验成功标志,清除MFCrypto1On位
-  if(mode){
-    PcdSwitchPCB();
-    pInBfr[0] = gcRfidPcdPCB;		
-    pInBfr[1] = 0x01;
-    unLen += 2;
-    CalulateCRC(pInBfr, unLen,&pInBfr[unLen]);	// 生成发送内容的CRC校验,保存到最后两个字节
-   
-  }else{
-    CalulateCRC(pInBfr, inLen ,&pInBfr[inLen]);	// 生成发送内容的CRC校验,保存到最后两个字节
-  }	
-      #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
-      dbgTRACE("%d \r\n", unLen);
-      for(int i=0; i<(unLen); i++){
-          dbgTRACE("%0.2x ", pInBfr[i]);
-      }
-      dbgTRACE("\r\n");
-      #endif
+  PcdSwitchPCB();
+  pInBfr[0] = gcRfidPcdPCB;		
+  pInBfr[1] = 0x01;
+  unLen += 2;
+  CalulateCRC(pInBfr, unLen,&pInBfr[unLen]);	// 生成发送内容的CRC校验,保存到最后两个字节
+  #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
+    dbgTRACE("%d \r\n", unLen);
+    for(int i=0; i<(unLen); i++){
+      dbgTRACE("%0.2x ", pInBfr[i]);
+    }
+    dbgTRACE("\r\n");
+  #endif
   
-     status = PcdComMF522(PCD_TRANSCEIVE, pInBfr, unLen + 2, pOutBfr, &unLen);// 将收到的卡片类型号保存
-      #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
-      dbgTRACE("%d \r\n", unLen);
-      for(int i=0; i<(unLen); i++){
-          dbgTRACE("%0.2x ", pOutBfr[i]);
-      }
-      dbgTRACE("\r\n");
-      #endif
+  status = PcdComMF522(PCD_TRANSCEIVE, pInBfr, unLen + 2, pOutBfr, &unLen);// 将收到的卡片类型号保存
+  #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
+    dbgTRACE("%d \r\n", unLen);
+    for(int i=0; i<(unLen); i++){
+      dbgTRACE("%0.2x ", pOutBfr[i]);
+    }
+    dbgTRACE("\r\n");
+  #endif
   if (status == MI_OK){
     *pOutLen = unLen;
     status = MI_OK;

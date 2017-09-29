@@ -13,12 +13,12 @@
 #endif
 
 /****************************通讯方式***********************************/
-#define _MFRC_SOFT_SPI  /***模拟SPI***/
-
+#define _MFRC_SOFT_SPI   0/***1:模拟SPI***/
+ 
 /***************************************************************/
 #define MFRC_ULTRALPRO_CPU      1
 
-#if(MFRC_ULTRALPRO_CPU > 0)
+#if (MFRC_ULTRALPRO_CPU > 0)
 enum eRFIDCRYMode{
   eRFID_ENCRY = 0x0,/*加密*/
   eRFID_DECRY = 0x1,
@@ -45,7 +45,7 @@ enum eRFIDCRYMode{
 #include "trace.h"
 #endif
 
-#ifndef _MFRC_SOFT_SPI
+#if (_MFRC_SOFT_SPI == 0)
 #include "SPI.h"
 #define MFRC_TxRxByte SPI2_TxRxByte
 #endif
@@ -98,8 +98,10 @@ enum _tag_ePICC_CMD
   PICC_RESTORE   = 0xC2,               //调块数据到缓冲区
   PICC_TRANSFER  = 0xB0,               //保存缓冲区中数据
   PICC_HALT      = 0x50,               //休眠
+#if (MFRC_ULTRALPRO_CPU > 0)
   PICC_RATS      = 0xE0,               //RATS
   PICC_PPS       = 0xD1,               //PPS
+#endif
 };
 
 /*****************卡片操作接口函数********************/
@@ -133,10 +135,10 @@ typedef struct tagRfCtrlFUNCTION
   char (*pfnValue)(uint8_t, uint8_t,uint8_t *);
   char (*pfnAuthState)(uint8_t ,uint8_t ,uint8_t *,uint8_t *);
   
-#if(MFRC_ULTRALPRO_CPU > 0)  
+#if (MFRC_ULTRALPRO_CPU > 0)  
   /*CPU卡操作函数*/
   char (*pfnRATS)(uint8_t *, uint8_t *);
-  char (*pfnCmdPro)(uint8_t, uint8_t* ,uint8_t ,uint8_t *,uint8_t *);
+  char (*pfnCmdPro)(uint8_t* ,uint8_t ,uint8_t *,uint8_t *);
   uint8_t (*pfnDES)(enum eRFIDCRYMode Mode,uint8_t *MsgIn, uint8_t *Key, uint8_t *MsgOut);
   unsigned char (*pfnMAC)(unsigned char *init_data,unsigned char *mac_key,
                           unsigned char data_len,unsigned char *in_data,unsigned char *mac_data);
