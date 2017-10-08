@@ -11,11 +11,11 @@ USB_OTG_CORE_HANDLE  USB_OTG_dev;
 static void InitChipInternal(void){
   //vConfigureRTC();
   
-  //vGPIO_Configure();
+  vGPIO_Configure();
   
   SPI1_Configure();
   
-  SPI2_Configure();
+  //SPI2_Configure();
   
   //vTIM3_Init();
   
@@ -32,14 +32,14 @@ static void InitBoardPeripheral(void){
   //FlashEraseChip(TFT_FLASHCS);
   
   //GPIO_SetBits(GPIOF,GPIO_Pin_8);
-  //GPIO_ResetBits(GPIOF,GPIO_Pin_8);
   
-  //LCD19264_Init(); 
+  
+  LCD19264_Init(); 
   
   
   //InitParam();
   
-  RFID_Init();
+  //RFID_Init();
   
   //vETH_EmacInit();
   
@@ -61,9 +61,9 @@ void AppTaskInit(void){
   /***初始化外围设备***/
   InitBoardPeripheral(); 
   
-
-  //LcdPutStr("Lcd TestDemo", sizeof("Lcd TestDemo"), eLcdWRCtrlLine_One, 2);
-  //LcdPutStr("显示屏测试", sizeof("显示屏测试"), eLcdWRCtrlLine_One, 1);
+  LcdPutStr("LcdTestDemo", sizeof("LcdTestDemo"), eLcdWRCtrlLine_Two, 2);
+  LcdPutStr("LcdTestDemo", sizeof("LcdTestDemo"), eLcdWRCtrlLine_Three, 2);
+  LcdPutStr("LcdTestDemo", sizeof("LcdTestDemo"), eLcdWRCtrlLine_Four, 2);
 }
 
 /*******************10MSTask**************************/
@@ -120,7 +120,7 @@ void CardIssure(void){
       #endif 
       break;
     }
-#if 0    
+#if 1 
     /************************************************************/
     /*选择主目录*/
 #if 0
@@ -742,11 +742,12 @@ void vDelay1STask(void){
   dbgTRACE("appStart\n");//
   #endif 
   
-  CardIssure();
-
-  //LcdPutStr("Lcd TestDemo", sizeof("Lcd TestDemo"), eLcdWRCtrlLine_Two, 2);
-  //LcdPutStr("Lcd TestDemo", sizeof("Lcd TestDemo"), eLcdWRCtrlLine_Three, 2);
-  GPIO_ToggleBits(GPIOE,GPIO_Pin_2);
+  //CardIssure();
+#if 0
+  LcdPutStr("Lcd TestDemo", sizeof("Lcd TestDemo"), eLcdWRCtrlLine_Two, 2);
+  LcdPutStr("Lcd TestDemo", sizeof("Lcd TestDemo"), eLcdWRCtrlLine_Three, 2);
+#endif
+ // GPIO_ToggleBits(GPIOE,GPIO_Pin_2);
 }
 
 /***************MainTask*************************/

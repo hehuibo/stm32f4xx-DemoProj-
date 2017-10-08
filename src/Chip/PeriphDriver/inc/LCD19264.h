@@ -30,6 +30,7 @@ enum eTagLcdWRCtrlTYPE
 
 void LCD19264_Init(void);
 
+void LcdClrScreen(void);
 void LcdShowNumChar(uint8_t addr, uint8_t i, uint8_t cout,  enum eTagLcdWRCtrlTYPE mType);
 void LcdShowChars(uint8_t addr, const uint8_t *pStr, uint8_t cout,  enum eTagLcdWRCtrlTYPE mType);
 void LcdPutStr(const uint8_t *pStr, uint8_t len, enum eTagLcdWRCtrlTYPE mLine, uint8_t offset);
