@@ -21,7 +21,7 @@ static void InitChipInternal(void){
   
   //vPWM_Init();
   
-
+  vFSMC_SRAM_Init();
 }
 
 /***≥ı ºªØÕ‚Œß…Ë±∏***/
@@ -30,10 +30,6 @@ static void InitBoardPeripheral(void){
   //Flash_Init();
   
   //FlashEraseChip(TFT_FLASHCS);
-
-  
-  GPIO_ResetBits(GPIOF,GPIO_Pin_8);
-  GPIO_ResetBits(GPIOF,GPIO_Pin_7);
   
   LCD19264_Init(); 
   
@@ -62,11 +58,14 @@ void AppTaskInit(void){
   /***≥ı ºªØÕ‚Œß…Ë±∏***/
   InitBoardPeripheral(); 
 #if 1 
-  LcdPutStr("“∫æßœ‘ æ1", sizeof("“∫æßœ‘ æ"), eLcdWRCtrlLine_One, 0);
-  LcdPutStr("“∫æßœ‘ æ2", sizeof("“∫æßœ‘ æ"), eLcdWRCtrlLine_Two, 0);
-  LcdPutStr("“∫æßœ‘ æ3", sizeof("“∫æßœ‘ æ"), eLcdWRCtrlLine_Three, 0);
-  LcdPutStr("“∫æßœ‘ æ4", sizeof("“∫æßœ‘ æ"), eLcdWRCtrlLine_Four, 0);  
+  LcdPutStr("“∫æßœ‘ æ1", sizeof("“∫æßœ‘ æ1"), eLcdWRCtrlLine_One, 0);
+  LcdPutStr("“∫æßœ‘ æ3", sizeof("“∫æßœ‘ æ2"), eLcdWRCtrlLine_Three, 0);
+  LcdPutStr("“∫æßœ‘ æ2", sizeof("“∫æßœ‘ æ3"), eLcdWRCtrlLine_Two, 0);
+  LcdPutStr("“∫æßœ‘ æ4", sizeof("“∫æßœ‘ æ4"), eLcdWRCtrlLine_Four, 0);  
+  //vTestSramRDWR();
 #endif
+  
+  
 }
 
 /*******************10MSTask**************************/
@@ -747,8 +746,10 @@ void vDelay1STask(void){
   
   //CardIssure();
 #if 1
-  LcdPutStr("Lcd TestDemo", sizeof("Lcd TestDemo"), eLcdWRCtrlLine_Two, 2);
-  //LcdPutStr("Lcd TestDemo", sizeof("Lcd TestDemo"), eLcdWRCtrlLine_Three, 2);
+  LcdPutStr("“∫æßœ‘ æ11  ", sizeof("“∫æßœ‘ æ11  "), eLcdWRCtrlLine_One, 0);
+  LcdPutStr("“∫æßœ‘ æ13  ", sizeof("“∫æßœ‘ æ12  "), eLcdWRCtrlLine_Three, 0);
+  LcdPutStr("“∫æßœ‘ æ12  ", sizeof("“∫æßœ‘ æ13  "), eLcdWRCtrlLine_Two, 0);
+  LcdPutStr("“∫æßœ‘ æ14  ", sizeof("“∫æßœ‘ æ14  "), eLcdWRCtrlLine_Four, 0); 
 #endif
   GPIO_ToggleBits(GPIOE,GPIO_Pin_2);
 }

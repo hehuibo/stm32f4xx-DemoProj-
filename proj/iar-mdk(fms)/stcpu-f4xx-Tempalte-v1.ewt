@@ -2515,6 +2515,9 @@
             <file>
                 <name>$PROJ_DIR$\..\..\src\Chip\PeriphDriver\src\SDIO.c</name>
             </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\src\Chip\PeriphDriver\src\SRAM.c</name>
+            </file>
         </group>
         <group>
             <name>stm32f4xx</name>

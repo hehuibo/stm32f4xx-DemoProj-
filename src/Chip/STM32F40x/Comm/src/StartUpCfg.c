@@ -81,6 +81,7 @@ void vStartUpConfigure(void)
    
    AppCommBufferInit();
    
+   
 #if defined (UART_TRACE) || defined (JLINK_RTT_TRACE)
     TRACE_Init();
 #endif

@@ -15,6 +15,7 @@
 #include "Flash.h"
 #include "Param.h"
 #include "ff.h"
+#include "SRAM.h"
 
 #include "RFID\RFID.h"
 #include "LCD19264.h"

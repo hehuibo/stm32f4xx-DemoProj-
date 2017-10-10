@@ -11,7 +11,7 @@
 #include "TimDly.h"
 
 extern void SysTickDlyMs(uint16_t ms);
-#define LcdDly(x) TimDlyMs(x)//SysTickDlyMs(x)//
+#define LcdDly(x) TimDlyMs(x)//
 
 #if defined(STM32F40_41xxx)
 #define LCD_RST_PORTCLK     RCC_AHB1Periph_GPIOB
@@ -57,7 +57,7 @@ static void LCD19264_GPIOConfigure(void)
   
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;  
   //GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP; 
 #else
@@ -65,7 +65,7 @@ static void LCD19264_GPIOConfigure(void)
                          LCD_SCK1_PORTCLK| LCD_SCK2_PORTCLK, ENABLE);
   
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
 #endif
   /*CS*/
   GPIO_InitStructure.GPIO_Pin = LCD_RST_PIN;
@@ -96,13 +96,13 @@ void LcdSendByte(uint8_t mData, enum eTagLcdWRCtrlTYPE mType)
     switch(mType){
     case eLcdWRCtrlTYPE_HIGHT: 
         SET_LCD_SCK1(true);
-        __ASM("nop");
+        //__ASM("nop");
         SET_LCD_SCK1(false);
       break;
       
     case eLcdWRCtrlTYPE_LOW :
         SET_LCD_SCK2(true);
-        __ASM("nop");
+        //__ASM("nop");
         SET_LCD_SCK2(false);
       break;
     
@@ -110,7 +110,7 @@ void LcdSendByte(uint8_t mData, enum eTagLcdWRCtrlTYPE mType)
       break;
     }
   
-    //__ASM("nop");
+    __ASM("nop");
   }
 }
 
@@ -128,7 +128,7 @@ void LcdWRCmdDat(bool bData, uint8_t mCmdDat, enum eTagLcdWRCtrlTYPE mType)
 {
   SET_LCD_CS(true);
   LcdWR(mCmdDat, bData, mType);//1,data, 0: cmd
-  LcdDly(1);
+  LcdDly(5);
   SET_LCD_CS(false);
 }
 
@@ -147,26 +147,22 @@ void LCD19264_Init(void)
   SET_LCD_RST(true);
   LcdDly(10);
    
-  LcdWRCmdDat(false, 0x30, eLcdWRCtrlTYPE_LOW);
   LcdWRCmdDat(false, 0x30, eLcdWRCtrlTYPE_HIGHT);
+  LcdWRCmdDat(false, 0x30, eLcdWRCtrlTYPE_LOW);
   
-  
-  LcdWRCmdDat(false, 0x06, eLcdWRCtrlTYPE_LOW);
   LcdWRCmdDat(false, 0x06, eLcdWRCtrlTYPE_HIGHT);
-  
+  LcdWRCmdDat(false, 0x06, eLcdWRCtrlTYPE_LOW);
   
   /*«Â≥˝œ‘ æ: 0x01*/
-  LcdWRCmdDat(false, 0x01, eLcdWRCtrlTYPE_LOW);
   LcdWRCmdDat(false, 0x01, eLcdWRCtrlTYPE_HIGHT);
+  LcdWRCmdDat(false, 0x01, eLcdWRCtrlTYPE_LOW);
   
-  
-  
-  LcdWRCmdDat(false, 0x0C, eLcdWRCtrlTYPE_LOW);
   LcdWRCmdDat(false, 0x0C, eLcdWRCtrlTYPE_HIGHT);
+  LcdWRCmdDat(false, 0x0C, eLcdWRCtrlTYPE_LOW);
   
   /*µÿ÷∑πÈ¡„: 0x02*/
-  LcdWRCmdDat(false, 0x02, eLcdWRCtrlTYPE_LOW);
   LcdWRCmdDat(false, 0x02, eLcdWRCtrlTYPE_HIGHT);
+  LcdWRCmdDat(false, 0x02, eLcdWRCtrlTYPE_LOW);
   LcdDly(10);
 }
 
@@ -215,8 +211,7 @@ void LcdPutStr(const uint8_t *pStr, uint8_t len, enum eTagLcdWRCtrlTYPE mLine, u
     len ++;
   }
   LcdShowChars(addr, pStr, len/2,  mType);
-#else 
+#endif 
   LcdShowChars(addr, pStr, len,  mType);
-#endif
 }
 
