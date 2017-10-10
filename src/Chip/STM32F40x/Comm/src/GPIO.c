@@ -24,10 +24,11 @@ void vGPIO_Configure(void)
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
   GPIO_Init(GPIOE,&GPIO_InitStructure);
   
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8|GPIO_Pin_7;
   GPIO_Init(GPIOF,&GPIO_InitStructure);
   
-  GPIO_ResetBits(GPIOE,GPIO_Pin_2);
+  GPIO_ResetBits(GPIOF,GPIO_Pin_8|GPIO_Pin_7);
+  GPIO_SetBits(GPIOE,GPIO_Pin_2);
 
 }
 

@@ -777,11 +777,11 @@
                 </option>
                 <option>
                     <name>IlinkIcfOverride</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>$PROJ_DIR$\..\..\src\Chip\STM32F40x\CMSIS\Linker\Chip.icf</state>
+                    <state>$TOOLKIT_DIR$\config\linker\ST\stm32f407xG.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
@@ -1106,7 +1106,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>8.11.2.13604</state>
+                    <state>8.11.3.13977</state>
                 </option>
                 <option>
                     <name>GeneralEnableMisra</name>
@@ -1256,6 +1256,8 @@
                     <state>USE_STDPERIPH_DRIVER</state>
                     <state>_NoRTOSKernel</state>
                     <state>UART_TRACE</state>
+                    <state>USE_USB_OTG_FS</state>
+                    <state>USE_EMBEDDED_PHY</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -1395,6 +1397,11 @@
                     <state>$PROJ_DIR$\..\..\src\utlis\inc\debug\RTT</state>
                     <state>$PROJ_DIR$\..\..\src\Comm\Param\inc</state>
                     <state>$PROJ_DIR$\..\..\src\Comm\Core\inc\system</state>
+                    <state>$PROJ_DIR$\..\..\src\3rdPart\FatFs\inc</state>
+                    <state>$PROJ_DIR$\..\..\src\Comm\Core\inc\USB</state>
+                    <state>$PROJ_DIR$\..\..\src\Chip\STM32F40x\USB-Host-Device_Lib\STM32_USB_OTG_Driver\inc</state>
+                    <state>$PROJ_DIR$\..\..\src\Chip\STM32F40x\USB-Host-Device_Lib\STM32_USB_Device_Library\Class\msc\inc</state>
+                    <state>$PROJ_DIR$\..\..\src\Chip\STM32F40x\USB-Host-Device_Lib\STM32_USB_Device_Library\Core\inc</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>

@@ -13,7 +13,7 @@ static void InitChipInternal(void){
   
   vGPIO_Configure();
   
-  SPI1_Configure();
+  //SPI1_Configure();
   
   //SPI2_Configure();
   
@@ -30,13 +30,14 @@ static void InitBoardPeripheral(void){
   //Flash_Init();
   
   //FlashEraseChip(TFT_FLASHCS);
+
   
-  //GPIO_SetBits(GPIOF,GPIO_Pin_8);
-  
+  GPIO_ResetBits(GPIOF,GPIO_Pin_8);
+  GPIO_ResetBits(GPIOF,GPIO_Pin_7);
   
   LCD19264_Init(); 
   
-  
+ 
   //InitParam();
   
   //RFID_Init();
@@ -60,10 +61,12 @@ void AppTaskInit(void){
   
   /***≥ı ºªØÕ‚Œß…Ë±∏***/
   InitBoardPeripheral(); 
-  
-  LcdPutStr("LcdTestDemo", sizeof("LcdTestDemo"), eLcdWRCtrlLine_Two, 2);
-  LcdPutStr("LcdTestDemo", sizeof("LcdTestDemo"), eLcdWRCtrlLine_Three, 2);
-  LcdPutStr("LcdTestDemo", sizeof("LcdTestDemo"), eLcdWRCtrlLine_Four, 2);
+#if 1 
+  LcdPutStr("“∫æßœ‘ æ1", sizeof("“∫æßœ‘ æ"), eLcdWRCtrlLine_One, 0);
+  LcdPutStr("“∫æßœ‘ æ2", sizeof("“∫æßœ‘ æ"), eLcdWRCtrlLine_Two, 0);
+  LcdPutStr("“∫æßœ‘ æ3", sizeof("“∫æßœ‘ æ"), eLcdWRCtrlLine_Three, 0);
+  LcdPutStr("“∫æßœ‘ æ4", sizeof("“∫æßœ‘ æ"), eLcdWRCtrlLine_Four, 0);  
+#endif
 }
 
 /*******************10MSTask**************************/
@@ -743,11 +746,11 @@ void vDelay1STask(void){
   #endif 
   
   //CardIssure();
-#if 0
+#if 1
   LcdPutStr("Lcd TestDemo", sizeof("Lcd TestDemo"), eLcdWRCtrlLine_Two, 2);
-  LcdPutStr("Lcd TestDemo", sizeof("Lcd TestDemo"), eLcdWRCtrlLine_Three, 2);
+  //LcdPutStr("Lcd TestDemo", sizeof("Lcd TestDemo"), eLcdWRCtrlLine_Three, 2);
 #endif
- // GPIO_ToggleBits(GPIOE,GPIO_Pin_2);
+  GPIO_ToggleBits(GPIOE,GPIO_Pin_2);
 }
 
 /***************MainTask*************************/

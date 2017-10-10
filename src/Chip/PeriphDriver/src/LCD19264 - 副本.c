@@ -27,11 +27,11 @@ extern void SysTickDlyMs(uint16_t ms);
 #define LCD_SCK2_PORTCLK    RCC_APB2Periph_GPIOB
 #endif
 
-#define LCD_RST_PIN         GPIO_Pin_2
+#define LCD_RST_PIN         GPIO_Pin_1
 #define LCD_RST_PORT        GPIOB
 #define SET_LCD_RST(x)      x ? GPIO_SetBits(LCD_RST_PORT,LCD_RST_PIN):GPIO_ResetBits(LCD_RST_PORT,LCD_RST_PIN);
 
-#define LCD_CS_PIN          GPIO_Pin_1
+#define LCD_CS_PIN          GPIO_Pin_2//GPIO_Pin_9
 #define LCD_CS_PORT         GPIOB
 #define SET_LCD_CS(x)	    x ? GPIO_SetBits(LCD_CS_PORT,LCD_CS_PIN):GPIO_ResetBits(LCD_CS_PORT,LCD_CS_PIN);
 
@@ -57,19 +57,22 @@ static void LCD19264_GPIOConfigure(void)
   
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;  
-  //GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP; 
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+  //GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL; 
+  //GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP; 
 #else
   RCC_APB2PeriphClockCmd(LCD_RST_PORTCLK| LCD_CS_PORTCLK | LCD_SID_PORTCLK |
                          LCD_SCK1_PORTCLK| LCD_SCK2_PORTCLK, ENABLE);
   
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 #endif
   /*CS*/
   GPIO_InitStructure.GPIO_Pin = LCD_RST_PIN;
   GPIO_Init(LCD_CS_PORT, &GPIO_InitStructure);
+  //GPIO_SetBits(LCD_CS_PORT,LCD_CS_PIN);
+  //GPIO_ResetBits(LCD_CS_PORT,LCD_CS_PIN);
   
   /*RST*/
   GPIO_InitStructure.GPIO_Pin = LCD_RST_PIN;
@@ -96,13 +99,13 @@ void LcdSendByte(uint8_t mData, enum eTagLcdWRCtrlTYPE mType)
     switch(mType){
     case eLcdWRCtrlTYPE_HIGHT: 
         SET_LCD_SCK1(true);
-        //__ASM("nop");
+        __ASM("nop");
         SET_LCD_SCK1(false);
       break;
       
     case eLcdWRCtrlTYPE_LOW :
         SET_LCD_SCK2(true);
-        //__ASM("nop");
+        __ASM("nop");
         SET_LCD_SCK2(false);
       break;
     
@@ -113,7 +116,6 @@ void LcdSendByte(uint8_t mData, enum eTagLcdWRCtrlTYPE mType)
     __ASM("nop");
   }
 }
-
 
 void LcdWR(uint8_t mData, uint8_t mWRS, enum eTagLcdWRCtrlTYPE mType)
 {
@@ -128,58 +130,63 @@ void LcdWRCmdDat(bool bData, uint8_t mCmdDat, enum eTagLcdWRCtrlTYPE mType)
 {
   SET_LCD_CS(true);
   LcdWR(mCmdDat, bData, mType);//1,data, 0: cmd
-  LcdDly(5);
+  LcdDly(1);
   SET_LCD_CS(false);
 }
 
 void LCD19264_Init(void)
 {
   LCD19264_GPIOConfigure();
-#if 0
-  SET_LCD_SCK1(false);
-  SET_LCD_SCK2(false);
-  SET_LCD_SID(false);  
-#endif 
-  
-  LcdDly(100);  
+    
+  LcdDly(10);
+  SET_LCD_RST(true);
+  LcdDly(5);
   SET_LCD_RST(false);
-  LcdDly(100);
+  LcdDly(50);
   SET_LCD_RST(true);
   LcdDly(10);
    
   LcdWRCmdDat(false, 0x30, eLcdWRCtrlTYPE_HIGHT);
   LcdWRCmdDat(false, 0x30, eLcdWRCtrlTYPE_LOW);
+  LcdDly(1);
   
   LcdWRCmdDat(false, 0x06, eLcdWRCtrlTYPE_HIGHT);
   LcdWRCmdDat(false, 0x06, eLcdWRCtrlTYPE_LOW);
+  LcdDly(1);
   
   /*«Â≥˝œ‘ æ: 0x01*/
   LcdWRCmdDat(false, 0x01, eLcdWRCtrlTYPE_HIGHT);
   LcdWRCmdDat(false, 0x01, eLcdWRCtrlTYPE_LOW);
+  LcdDly(5);
   
   LcdWRCmdDat(false, 0x0C, eLcdWRCtrlTYPE_HIGHT);
   LcdWRCmdDat(false, 0x0C, eLcdWRCtrlTYPE_LOW);
+  LcdDly(1);
   
   /*µÿ÷∑πÈ¡„: 0x02*/
   LcdWRCmdDat(false, 0x02, eLcdWRCtrlTYPE_HIGHT);
   LcdWRCmdDat(false, 0x02, eLcdWRCtrlTYPE_LOW);
-  LcdDly(10);
+  LcdDly(1);
 }
 
 void LcdClrScreen(void)
 {
-  LcdDly(50);
+
+  LcdWRCmdDat(false, 0x30, eLcdWRCtrlTYPE_HIGHT);
   LcdWRCmdDat(false, 0x01, eLcdWRCtrlTYPE_HIGHT);
+  LcdDly(5);
+  
+  LcdWRCmdDat(false, 0x30, eLcdWRCtrlTYPE_LOW);
   LcdWRCmdDat(false, 0x01, eLcdWRCtrlTYPE_LOW);
+  LcdDly(5);
 
 }
 
 void LcdShowChars(uint8_t addr, const uint8_t *pStr, uint8_t cout,  enum eTagLcdWRCtrlTYPE mType)
 {
-  
   LcdWRCmdDat(false, addr, mType);
 
-#if 0
+#if 1
   for(uint8_t i=0; i<cout; i++){
    LcdWRCmdDat(true, pStr[i*2], mType); 
    LcdWRCmdDat(true, pStr[i*2+1], mType);
@@ -187,9 +194,9 @@ void LcdShowChars(uint8_t addr, const uint8_t *pStr, uint8_t cout,  enum eTagLcd
 #else
   while(*pStr){
     LcdWRCmdDat(true, *pStr++, mType);
+    //pStr++;
   }
 #endif
-
 }
 
 void LcdPutStr(const uint8_t *pStr, uint8_t len, enum eTagLcdWRCtrlTYPE mLine, uint8_t offset)
@@ -206,12 +213,11 @@ void LcdPutStr(const uint8_t *pStr, uint8_t len, enum eTagLcdWRCtrlTYPE mLine, u
   if((mLine == eLcdWRCtrlLine_Three) || (mLine == eLcdWRCtrlLine_Four)){
     mType = eLcdWRCtrlTYPE_LOW;
   }
-#if 0 
+ 
   if(len % 2){
     len ++;
   }
+  
   LcdShowChars(addr, pStr, len/2,  mType);
-#endif 
-  LcdShowChars(addr, pStr, len,  mType);
 }
 
